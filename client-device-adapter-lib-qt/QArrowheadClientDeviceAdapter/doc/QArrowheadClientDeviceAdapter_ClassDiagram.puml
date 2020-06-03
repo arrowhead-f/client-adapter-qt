@@ -1,0 +1,362 @@
+@startuml "QArrowheadClientDeviceAdapter_ClassDiagram"
+
+
+enum ReturnValue{
+    OK
+    INVALIDVALUE
+    INVALIDARGNUM
+    NETWORKERROR
+    PEERERROR
+    UNAUTHORIZED
+    UNKNOWNERROR
+    UNIMPLEMENTED
+}
+
+enum SecurityType{
+    NOT_SECURE
+    CERTIFICATE
+    TOKEN
+}
+
+enum CertificateType{
+    AH_ONBOARDING
+    AH_DEVICE
+    AH_SYSTEM
+}
+
+hide enum empty members
+
+together {
+    class RegistryTag{
+        +int id
+        +std::string createdAt
+        +std::string updatedAt
+    }
+    
+    class ArrowheadCloud{
+        -std::string operator
+        -std::string name
+
+        +ArrowheadCloud(...)
+        +QJsonObject toJsonObject()
+        {static} ArrowheadCloud fromJsonObject(...)
+    }
+
+    class ArrowheadDevice{
+        -std::string address
+        -std::string authenticationInfo
+        -std::string deviceName
+        -std::string macAddress
+
+        +QJsonObject toJsonObject()
+        {static} ArrowheadDevice fromJsonObject(...)
+    }
+
+    class ArrowheadSystem{
+        -std::string systemName
+        -std::string address
+        -int port
+        -std::string authenticationInfo
+        
+        +ArrowheadSystem(...)
+        +QJsonObject toJsonObject()
+        {static} ArrowheadSystem fromJsonObject(...)
+    }
+
+    class ArrowheadService{
+        +std::string serviceDefinition
+        +std::vector<std::string> interfaces
+        +SecurityType securityType
+        +std::map<std::string, std::string> metadata
+        +std::string version
+        +std::string serviceUri
+        +std::string endOfValidity
+
+        +ArrowheadService(...)
+        +QJsonObject toJsonObject()
+        {static} ArrowheadService fromJsonObject(...)
+    }
+}
+
+class ArrowheadService::builder{
+    -std::string serviceDefinition
+    -std::vector<std::string> interfaces
+    -SecurityType securityType
+    -std::map<std::string, std::string> metadata
+    -std::string version
+    -std::string serviceUri
+    -std::string endOfValidity
+
+    +builder& set_serviceDefinition(...)
+    +builder& set_interfaces(...)
+    +builder& set_securityType(...)
+    +builder& set_metadata(...)
+    +builder& set_version(...)
+    +builder& set_serviceUri(...)
+    +builder& set_endOfValidity(...)
+    +ArrowheadService build() const
+}
+
+ArrowheadService +-- ArrowheadService::builder
+
+
+interface QArrowheadClientDeviceAdapterInterface{
+    - std::string onboardingControllerBaseUrl
+    
+    {abstract} ReturnValue getOnboardingControllerEcho()
+    {abstract} ReturnValue requestOnboardingWithNameAndCertificate(...)
+    {abstract} ReturnValue requestOnboardingWithNameAndSharedSecret(...)
+    {abstract} ReturnValue requestOnboardingWithCsrAndCertificate(...)
+    {abstract} ReturnValue requestOnboardingWithCsrAndSharedSecret(...)
+    {abstract} ReturnValue getDeviceRegistryEcho()
+    {abstract} ReturnValue queryDevice(...)
+    {abstract} ReturnValue registerDevice(...)
+    {abstract} ReturnValue registerOnboardingDeviceWithName(...)
+    {abstract} ReturnValue registerOnboardingDeviceWithCsr(...)
+    {abstract} ReturnValue unregisterDevice(...)
+    {abstract} ReturnValue getSystemRegistryEcho(...)
+    {abstract} ReturnValue querySystem(...)
+    {abstract} ReturnValue registerSystem(...)
+    {abstract} ReturnValue registerOnboardingSystemWithName(...)
+    {abstract} ReturnValue registerOnboardingSystemWithCsr(...)
+    {abstract} ReturnValue unregisterSystem(...)
+}
+
+class QSslArrowheadClientDeviceAdapter{
+    - QSslConfiguration sslConfig
+    - std::string sharedSecret
+
+    + ReturnValue init(std::string& iniFileName)
+}
+
+' --- Onboarding Controller interface
+together {
+    class KeyPair{
+        +std::string keyAlgorithm
+        +std::string keyFormat
+        +std::string privateKey
+        +std::string publicKey
+
+        +QJsonObject toJsonObject()
+    }
+
+    class Certificate{
+        +std::string certificate
+        +std::string certificateFormat
+        +const CertificateType certificateType
+        +keyPair keyPair
+
+        +QJsonObject toJsonObject()
+    }
+
+    class CertificateCreationRequest{
+        +std::string commonName
+        +KeyPair keyPair
+
+        +QJsonObject toJsonObject()
+    }
+
+    class OnboardingWithNameRequest{
+        +CertificateCreationRequest ccr
+
+        +QJsonObject toJsonObject()
+    }   
+
+    class OnboardingWithCsrRequest{
+        +std::string certificateSigningRequest
+
+        +QJsonObject toJsonObject()
+    }
+
+    class OnboardingResponse{
+        +std::string rootCertificate
+        +std::string intermediateCertificate
+        +Certificate onboardingCertificate
+        +ArrowheadService deviceRegistry
+        +ArrowheadService systemRegistry
+        +ArrowheadService serviceRegistry
+        +ArrowheadService orchestrationService
+
+        {static} OnboardingResponse fromJsonObject(...)
+    }
+
+    CertificateCreationRequest ..> KeyPair
+    OnboardingWithNameRequest ..> CertificateCreationRequest
+    OnboardingWithNameRequest . OnboardingResponse
+    OnboardingResponse ..> Certificate
+    Certificate ..> CertificateType
+    Certificate ..> KeyPair
+    OnboardingWithCsrRequest . OnboardingResponse
+}
+
+' --- Device Registry interface
+together {
+    class DeviceQueryForm{
+        +std::string addressRequirement
+        +std::string deviceNameRequirements
+        +std::string macAddressRequirement
+        +int maxVersionRequirement
+        +std::map<std::string,std::string> metadataRequirements
+        +int minVersionRequirement
+        +int versionRequirement
+        
+        +QJsonObject toJsonObject()
+    }
+
+    class DeviceQueryList{
+        +std::vector<DeviceRegistryEntry> devices
+        +int unfilteredHits
+
+        {static} DeviceQueryList fromJsonObject(...)
+    }
+
+    class DeviceRegistrationForm{
+        +ArrowheadDevice device
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject()
+    }
+
+    class DeviceRegistryEntry{
+        +RegistryTag entryTag
+        +ArrowheadDevice device
+        +RegistryTag deviceTag
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        {static} DeviceRegistryEntry fromJsonObject(...)
+    }
+
+    class DeviceOnboardingWithNameRequest{
+        +CertificateCreationRequest ccr
+        +ArrowheadDevice device
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject()
+    }
+
+    class DeviceOnboardingWithCsrRequest{
+        +std::string certificateSigningRequest
+        +ArrowheadDevice device
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject()
+    }
+
+    class DeviceOnboardingResponse{
+        +Certificate certificateResponse
+        +DeviceRegistryEntry deviceRegistryEntry
+
+        {static} DeviceOnboardingResponse fromJsonObject(...)
+    }
+
+    DeviceOnboardingResponse .> DeviceRegistryEntry
+    DeviceOnboardingWithNameRequest .> DeviceOnboardingResponse
+    DeviceOnboardingWithCsrRequest .> DeviceOnboardingResponse
+    DeviceQueryList ..> DeviceRegistryEntry
+}
+
+together {
+    class SystemQueryForm{
+        +std::string systemNameRequirements
+        +std::string deviceNameRequirements
+        +std::map<std::string,std::string> metadataRequirements
+        +bool pingProviders   
+        +int versionRequirement
+        +int minVersionRequirement
+        +int maxVersionRequirement
+
+        +QJsonObject toJsonObject()
+    }
+
+    class SystemQueryList{
+        +std::vector<SystemRegistryEntry> systems
+        +int unfilteredHits
+
+        {static} SystemQueryList fromJsonObject(...)
+    }
+
+    class SystemRegistrationForm{
+        +ArrowheadDevice provider
+        +ArrowheadSystem system
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject(...)
+    }
+
+    class SystemRegistryEntry{
+        +RegistryTag entryTag
+        +ArrowheadDevice provider
+        +RegistryTag deviceTag
+        +ArrowheadSystem system
+        +RegistryTag systemTag
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        {static} SystemRegistryEntry fromJsonObject(...)
+    }
+
+    class SystemOnboardingWithNameRequest{
+        +CertificateCreationRequest ccr
+        +ArrowheadDevice provider
+        +ArrowheadSystem system
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject()    
+    }
+
+    class SystemOnboardingWithCsrRequest{
+        +std::string certificateSigningRequest
+        +ArrowheadDevice provider
+        +ArrowheadSystem system
+        +std::string endOfValidity
+        +std::map<std::string,std::string> metadata
+        +int version
+
+        +QJsonObject toJsonObject()
+    }
+    class SystemOnboardingResponse{
+        +Certificate certificateResponse
+        +SystemRegistryEntry systemRegistryEntry
+
+        {static} SystemOnboardingResponse fromJsonObject(...)
+    }
+
+    SystemOnboardingResponse .> SystemRegistryEntry
+    SystemOnboardingWithNameRequest .> SystemOnboardingResponse
+    SystemOnboardingWithCsrRequest .> SystemOnboardingResponse
+    SystemQueryList ..> SystemRegistryEntry
+}
+
+
+QSslArrowheadClientDeviceAdapter -|> QArrowheadClientDeviceAdapterInterface
+QArrowheadClientDeviceAdapterInterface .> ReturnValue
+ArrowheadService .> SecurityType
+
+
+' ! Warning: Following lines target diagram layout formatting only!
+ArrowheadSystem --[hidden] QArrowheadClientDeviceAdapterInterface
+ArrowheadCloud -[hidden] ArrowheadSystem
+ArrowheadSystem -[hidden] ArrowheadService
+QArrowheadClientDeviceAdapterInterface --[hidden] OnboardingWithCsrRequest
+QArrowheadClientDeviceAdapterInterface --[hidden] DeviceQueryList
+CertificateType --[hidden] SystemQueryList
+' ! end of warning
+
+right footer
+<img:../../../doc/evopro_innovation_L.png{scale=0.1}>
+endfooter
+
+@enduml

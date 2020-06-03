@@ -1,0 +1,235 @@
+@startuml "QArrowheadClientSystemAdapter_ClassDiagram"
+
+set namespaceSeparator ::
+
+class arrowhead::ArrowheadServiceRequirement{
+    + serviceDefinitionRequirement : String
+    + interfaceRequiremnets : Vector<String>
+    + securityRequirements : Vector<SecurityType>
+    + metadataRequirements : Map<String,String>
+    + versionRequirement : Integer
+    + minVersionRequirement : Integer
+    + maxVersionRequirement : Integer
+    + Struct builder
+    + QJsonObject toJsonObject() const
+    - ArrowheadServiceRequirement(String, Vector<String>,\n Vector<SecurityType>, Map<String,String>,\n Integer, Integer, Integer)
+}
+
+class arrowhead::ArrowheadServiceRequirement::builder{
+    - serviceDefinitionRequirement : String
+    - interfaceRequiremnets : Vector<String>
+    - securityRequirements : Vector<SecurityType>
+    - metadataRequirements : Map<String,String>
+    - versionRequirement : Integer
+    - minVersionRequirement : Integer
+    - maxVersionRequirement : Integer
+    + builder& setServiceDefinitionRequirement(String);
+    + builder& setInterfaceRequirements(Vector<String>);
+    + builder& setSecurityRequirements(Vector<SecurityType>);
+    + builder& setMetadataRequirements(Map<String,String>);
+    + builder& setVersionRequirement(Integer);
+    + builder& setMinVersionRequirement(Integer);
+    + builder& setMaxVersionRequirement(Integer);
+    + ArrowheadServiceRequirement build() const
+}
+
+arrowhead::ArrowheadServiceRequirement +-- arrowhead::ArrowheadServiceRequirement::builder
+
+interface arrowhead::QArrowheadClientSystemAdapter{
+    # serviceRegistryBaseUrl : String
+    # authorizationBaseUrl : String
+    # orchestratorBaseUrl : String
+    # clientSystem : unique_ptr<ArrowheadSystem>
+    + QArowheadClientSystemAdapter(String,String,String,\n unique_ptr<ArrowheadSystem>)
+    {abstract} ReturnValue echoServiceRegistry()
+    {abstract} ReturnValue queryService(const ServiceQueryForm&,\n unique_ptr<ServiceQueryList>&)
+    {abstract} ReturnValue registerService(const ServiceRegistrationForm&,\n unique_ptr<ServiceRegistryEntry>&)
+    {abstract} ReturnValue unregisterService(const ServiceRegistryEntry&)
+    {abstract} ReturnValue echoAuthorizationSystem()
+    {abstract} ReturnValue getPublicKey(String&)
+    {abstract} ReturnValue echoOrchestrator()
+    {abstract} ReturnValue requestOrchestration(const ServiceRequestForm&\n unique_ptr<OrchestrationResponse>&)
+    {abstract} ReturnValue requestOrchestrationById(const Integer&,\n unique_ptr<OrchestrationResponse>&)
+}
+
+class arrowhead::QArrowheadHttpClientSystemAdapter{
+    - qnam : QNetworkAccessManager
+    - sslConfig : QSslConfiguration
+    - disableHostnameVerification : Bool
+    - ReturnValue performHttpOperation(QNetworkAccessManager::Operation,\n unique_ptr<QNetworkRequest>&,\n unique_ptr<QNetworkReply>&,\n shared_ptr<const QByteArray>)
+    - const QString typeToString(const QNetworkAccessManager::Operation&) const;
+    + ReturnValue setSslConfig(String,String,Bool)
+    + QArowheadHttpClientSystemAdapter(String,String,String,\n unique_ptr<ArrowheadSystem>)
+    + ReturnValue echoServiceRegistry()
+    + ReturnValue queryService(const ServiceQueryForm&,\n unique_ptr<ServiceQueryList>&)
+    + ReturnValue registerService(const ServiceRegistrationForm&,\n unique_ptr<ServiceRegistryEntry>&)
+    + ReturnValue unregisterService(const ServiceRegistryEntry&)
+    + ReturnValue echoAuthorizationSystem()
+    + ReturnValue getPublicKey(String&)
+    + ReturnValue echoOrchestrator()
+    + ReturnValue requestOrchestration(const ServiceRequestForm&\n unique_ptr<OrchestrationResponse>&)
+    + ReturnValue requestOrchestrationById(const Integer&,\n unique_ptr<OrchestrationResponse>&)
+}
+
+arrowhead::QArrowheadHttpClientSystemAdapter --|> arrowhead::QArrowheadClientSystemAdapter 
+
+class arrowhead::ServiceQueryForm{
+    + requestedService : ArrowheadServiceRequirement
+    + pingProviders : Bool
+    + struct builder
+    -ServiceQueryForm(ArrowheadServiceRequirement, Bool)
+    +QJsonObject toJsonObject() const
+}
+
+class arrowhead::ServiceQueryForm::builder{
+    - requestedService : ArrowheadServiceRequirement
+    - pingProviders : Bool
+    +builder& setRequestedService(ArrowheadServiceRequirement)
+    +builder& set_pingProviders(Bool)
+    +ServiceQueryForm build() const
+}
+
+arrowhead::ServiceQueryForm +-- arrowhead::ServiceQueryForm::builder
+
+class arrowhead::ServiceQueryList{
+    + srEntryVector : Vector<ServiceRegistryEntry>
+    + unfilteredHits : Integer
+    + ServiceQueryList(Vector<ServiceRegistryEntry>, Integer)
+    {static} ServiceQueryList fromJsonObject(const QJsonObject&)
+}
+
+class arrowhead::ServiceRegistryEntry{
+    + registeredService : ServiceEntry
+    + registeredProvider : ProviderEntry
+    + entryTag : RegistryTag
+    + ServiceRegistryEntry(ServiceEntry,ProviderEntry,RegistryTag)
+    {static} ServiceRegistryEntry fromJsonObject(const QJsonObject&)
+}
+
+class arrowhead::ServiceRegistryEntry::ServiceEntry{
+    + service : ArrowheadService
+    + entryTag : RegistryTag
+    + ServiceEntry(ArrowheadService,RegistryTag)
+}
+
+arrowhead::ServiceRegistryEntry +-- arrowhead::ServiceRegistryEntry::ServiceEntry
+
+class arrowhead::ServiceRegistryEntry::ProviderEntry{
+    + provider : ArrowheadSystem
+    + entryTag : RegistryTag
+    + ProviderEntry(ArrowheadSystem, RegistryTag)
+}
+
+arrowhead::ServiceRegistryEntry +-- arrowhead::ServiceRegistryEntry::ProviderEntry
+
+class arrowhead::ServiceRegistrationForm{
+    + service : ArrowheadService
+    + provider : ArrowheadSystem
+    + ServiceRegistrationForm(ArrowheadService, ArrowheadSystem)
+    + QJsonObject toJsonObject() const
+}
+
+class arrowhead::ServiceRequestForm{
+    + requestedService : ArrowheadServiceRequirement
+    + requesterSystem : ArrowheadSystem
+    + preferredProviders : Vector<PreferredProvider>
+    + orchestrationFlags : Map<OrchestrationFlagKey,Bool>
+    + struct builder
+    - ServiceRequestForm(ArrowheadServiceRequirement,\n ArrowheadSystem,\n Vector<PreferredProvider>,\n Map<OrchestrationFlagKey,Bool>)
+    + QJsonObject toJsonObject() const
+}
+
+class arrowhead::ServiceRequestForm::PreferredProvider{
+    + providerCloud : ArrowheadCloud
+    + providerSystem : ArrowheadSystem
+    + struct builder
+    + PreferredProvider(ArrowheadCloud,ArrowheadSystem)
+    + QJsonObject toJsonObject() const
+}
+
+arrowhead::ServiceRequestForm +-- arrowhead::ServiceRequestForm::PreferredProvider
+
+enum arrowhead::ServiceRequestForm::OrchestrationFlagKey{
+    Invalid,
+    MatchMaking,
+    MetadataSearch,
+    OnlyPreferred,
+    PingProviders,
+    OverrideStore,
+    EnableInterCloud,
+    TriggerInterCloud
+}
+
+arrowhead::ServiceRequestForm +-- arrowhead::ServiceRequestForm::OrchestrationFlagKey
+
+class arrowhead::ServiceRequestForm::builder{
+    - requestedService : ArrowheadServiceRequirement
+    - requesterSystem : ArrowheadSystem
+    - preferredProviders : Vector<PreferredProvider>
+    - orchestrationFlags : Map<OrchestrationFlagKey,Bool>
+    + builder()
+    + builder& setRequestedService(ArrowheadServiceRequirement)
+    + builder& setRequesterSystem(ArrowheadSystem)
+    + builder& setPreferredProviders(Vector<PreferredProvider>)
+    + builder& setOrchestrationFlags(Map<OrchestrationFlagKey,Bool>)
+    + ServiceRequestForm build() const
+}
+
+arrowhead::ServiceRequestForm +-- arrowhead::ServiceRequestForm::builder
+
+class arrowhead::OrchestrationEntry{
+    + orchestratedService : ServiceEntry
+    + orchestratedProvider : ProviderEntry
+    + authorizationTokens : Map<String,String>
+    + warnings : Vector<Warning>
+    +OrchestrationEntry(ServiceEnty,ProviderEntry,Map<String,String>,Vector<Warning>)
+    {static} OrchestrationEntry fromJsonObject(const QJsonObject&)
+}
+
+enum arrowhead::OrchestrationEntry::Warning{
+    FromOtherCloud,
+    TtlExpired,
+    TtlExpiring,
+    TtlUnknown,
+    Invalid
+}
+
+arrowhead::OrchestrationEntry +-- arrowhead::OrchestrationEntry::Warning
+
+class arrowhead::OrchestrationEntry::ServiceEntry{
+    + service : ArrowheadService
+    + entryTag : RegistryTag
+    + ServiceEntry(ArrowheadService,RegistryTag)
+}
+
+arrowhead::OrchestrationEntry +-- arrowhead::OrchestrationEntry::ServiceEntry
+
+class arrowhead::OrchestrationEntry::ProviderEntry{
+    + provider : ArrowheadSystem
+    + entryTag : RegistryTag
+    + ProviderEntry(ArrowheadSystem,RegistryTag)
+}
+
+arrowhead::OrchestrationEntry +-- arrowhead::OrchestrationEntry::ProviderEntry
+
+class arrowhead::OrchestrationResponse{
+    + orchEntryVector : Vector<OrchestrationEntry>
+    + OrchestrationResponse(Vector<OrchestrationEntry>)
+    {static} OrchestrationResponse fromJsonObject(const QJsonObject&)
+}
+
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::ServiceQueryForm
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::ServiceQueryList
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::ServiceRegistrationForm
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::ServiceRegistryEntry
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::ServiceRequestForm
+arrowhead::QArrowheadClientSystemAdapter ..> arrowhead::OrchestrationResponse
+
+arrowhead::ServiceQueryList ..> arrowhead::ServiceRegistryEntry
+arrowhead::OrchestrationResponse ..> arrowhead::OrchestrationEntry
+
+right footer
+<img:../../../doc/evopro_innovation_L.png{scale=0.1}>
+endfooter
+
+@enduml

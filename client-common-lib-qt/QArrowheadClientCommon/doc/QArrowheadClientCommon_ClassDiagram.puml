@@ -1,0 +1,104 @@
+@startuml "QArrowheadClientCommon_ClassDiagram"
+
+set namespaceSeparator ::
+
+class QJsonObject::QJsonObject
+
+enum arrowhead::ReturnValue{
+    OK
+    INVALIDVALUE
+    INVALIDARGNUM
+    NETWORKERROR
+    PEERERROR
+    UNKNOWNERROR
+    UNIMPLEMENTED
+}
+
+enum arrowhead::SecurityType{
+    INVALID
+    NOT_SECURE
+    CERTIFICATE
+    TOKEN
+}
+
+
+class arrowhead::RegistryTag{
+    +id : Integer
+    +createdAt : String
+    +updatedAt : String
+    +RegistryTag()
+    +RegistryTag(Integer, String, String)
+    +QJsonObject toJsonObject() const
+    {static} RegistryTag fromJsonObject(const QJsonObject&)
+}
+
+hide enum empty members
+
+class arrowhead::ArrowheadCloud{
+    +operatorName : String
+    +cloudName : String
+    +ArrowheadCloud(String, String)
+    +QJsonObject toJsonObject() const
+    {static} ArrowheadCloud fromJsonObject(const QJsonObject&)
+}
+
+class arrowhead::ArrowheadSystem{
+    +systemName : String
+    +address : String
+    +port : Int
+    +authenticationInfo : String
+    +ArrowheadSystem()
+    +ArrowheadSystem(String, String, Int, String)
+    +QJsonObject toJsonObject() const
+    {static} ArrowheadSystem fromJsonObject(const QJsonObject&)
+}
+
+class arrowhead::ArrowheadService{
+    +serviceDefinition : String
+    +interfaces : Vector<String>
+    +securityType : SecurityType
+    +metadata : Map<String,String>
+    +version : Int
+    +serviceUri : String
+    +endOfValidity : String
+    +builder : Struct
+    -ArrowheadService(String, Vector<String>,\n SecurityType, Map<String,String>,\n Int, String, String)
+    +QJsonObject toJsonObject() const
+    +bool operator==(const ArrowheadService&) const
+    {static} ArrowheadService fromJsonObject(const QJsonObject&)
+}
+
+class arrowhead::ArrowheadService::builder{
+    +serviceDefinition : String
+    +interfaces : Vector<String>
+    +securityType : SecurityType
+    +metadata : Map<String,String>
+    +version : Int
+    +serviceUri : String
+    +endOfValidity : String
+    +builder& set_serviceDefinition(String)
+    +builder& set_interfaces(Vector<String>)
+    +builder& set_securityType(SecurityType)
+    +builder& set_metadata(Map<String,String>)
+    +builder& set_version(Int)
+    +builder& set_serviceUri(String)
+    +builder& set_endOfValidity(String)
+    +ArrowheadService build() const
+}
+
+arrowhead::ArrowheadService +-- arrowhead::ArrowheadService::builder
+arrowhead::ArrowheadService -- arrowhead::SecurityType
+arrowhead::ArrowheadService::builder - arrowhead::SecurityType
+QJsonObject::QJsonObject -- arrowhead::RegistryTag
+QJsonObject::QJsonObject -- arrowhead::ArrowheadCloud
+QJsonObject::QJsonObject -- arrowhead::ArrowheadSystem
+QJsonObject::QJsonObject -- arrowhead::ArrowheadService
+
+' Only formatting!'
+arrowhead::ArrowheadSystem --[hidden] arrowhead::ReturnValue
+
+right footer
+<img:../../../doc/evopro_innovation_L.png{scale=0.1}>
+endfooter
+
+@enduml
