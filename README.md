@@ -37,7 +37,7 @@ The docker images can be downloaded to docker-enabled edge computers in order to
 Questions, comments, proposals related to _client-adapter-qt_ are always welcome. Please send an email to balint.peceli at eilabs dot com or open a pull request with your modifications.
 
 ## License
-_client-adapter-qt_ is licensed under the [Eclipse Public License 2.0](https://www.eclipse.org/legal/epl-2.0/).
+_client-adapter-qt_ is licensed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
 
 ## Documentation
 # client-common-lib-qt
