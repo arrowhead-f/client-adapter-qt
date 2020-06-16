@@ -33,7 +33,12 @@ The docker images can be downloaded to docker-enabled edge computers in order to
     - QArrowheadClientAdapterApp
     - TEST_QArrowheadClientAdapterApp
 
+## Dependencies
+
+- [Qt Essentials (5.12 LTS)](https://doc.qt.io/qt-5/qtmodules.html)
+
 ## Contribution
+
 Questions, comments, proposals related to _client-adapter-qt_ are always welcome. Please send an email to balint.peceli at eilabs dot com or open a pull request with your modifications.
 
 ## License
