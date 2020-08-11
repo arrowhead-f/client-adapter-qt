@@ -33,10 +33,10 @@ void TestCommon::typeToString_data(){
     QTest::addColumn<SecurityType>("sourceType");
     QTest::addColumn<std::string>("resultString");
 
-    QTest::newRow("not secure") << SecurityType::NotSecure <<
-                                   std::string("NOT_SECURE");
+    QTest::newRow("not secure") << SecurityType::NotSecure << std::string("NOT_SECURE");
     QTest::newRow("certificate") << SecurityType::Certificate <<
                                     std::string("CERTIFICATE");
+
     QTest::newRow("token") << SecurityType::Token <<
                               std::string("TOKEN");
     QTest::newRow("invalid") << SecurityType::Invalid <<

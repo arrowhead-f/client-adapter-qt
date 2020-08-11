@@ -26,9 +26,9 @@ The docker images can be downloaded to docker-enabled edge computers in order to
   - [client-system-adapter-lib-qt](#client-system-adapter-lib-qt)
     - [QArrowheadClientSystemAdapter](#qarrowheadclientsystemadapter)
     - [TEST_QArrowheadClientSystemAdapter](#test_qarrowheadclientsystemadapter)
-  - client-device-adapter-lib-qt
-    - QArrowheadClientDeviceAdapter
-    - TEST_QArrowheadClientDeviceAdapter
+  - [client-device-adapter-lib-qt](#client-device-adapter-lib-qt)
+    - [QArrowheadClientDeviceAdapter](#qarrowheadclientdeviceadapter)
+    - [TEST_QArrowheadClientDeviceAdapter](#test_qarrowheadclientdeviceadapter)
   - client-adapter-app-qt
     - QArrowheadClientAdapterApp
     - TEST_QArrowheadClientAdapterApp
@@ -92,7 +92,7 @@ The reader is required to have a good understanding of the Arrowhead framework b
 ## Initialization
 The library must be initialized by instantiating a _QArrowheadHttpClientSystemAdapter_ class.
 
-The constructor requires the the following parameters:
+The constructor requires the following parameters:
 * `std::string serviceRegistryBaseUrl` - the base URL of the Service Registry core system,
 * `std::string authorizationBaseUrl` - the base URL of the Authorization core system,
 * `std::string orchestratorBaseUrl` - the base URL of the Orchestrator core system,
@@ -117,7 +117,7 @@ The interface class _QArrowheadClientSystemAdapter_ has the following public fun
 - [queryService](#queryservice)
 - [registerService](#registerservice)
 - [unregisterService](#unregisterservice)
-- [echoAuthorizationSystem](#echoAuthoziationSystem)
+- [echoAuthorizationSystem](#echoAuthorizationSystem)
 - [getPublicKey](#getPublicKey)
 - [echoOrchestrator](#echoOrchestrator)
 - [requestOrchestration](#requestOrchestration)
@@ -155,9 +155,6 @@ The _queryService_ function queries the Service Registry for the presence of the
 ### Notes
 > Direct lookups from Application Systems within the network is not advised in [Arrowhead generation 4.1.3](https://github.com/arrowhead-f/core-java-spring/tree/development#service-registry), due to security reasons.
 
-> The _id_, _createdAt_ and _updatedAt_ fields of the response are ignored since they are not relevant for the client. The client should consult the HTTP status code in order to check the effect of its request.
-
-
 ## registerService
 ---
 ### Signature
@@ -180,7 +177,7 @@ ReturnValue unregisterService(const ServiceRegistryEntry& serviceRegistryEntry);
 The _unregisterService_ function deregisters from the Service Registry the application service defined by the _ServiceRegistryEntry_ input argument.
 
 
-## echoAuthoziationSystem
+## echoAuthorizationSystem
 ---
 ### Signature
 ```cpp
@@ -251,7 +248,9 @@ The compiled library will be deployed to the target directory defined in the [pr
 ## TEST_QArrowheadClientSystemAdapter
 _TEST_QArrowheadClientSystemAdapter_ is a Qt Test application implementing unit tests for _QArrowheadClientSystemAdapter_. For the unit tests to pass, the following Arrowhead core systems are required to be available: _Service Registry_, _Authorization_, _Orchestrator_. The core service endpoints and the parameters of the adapted client system and services must be defined in the [arrowhead.ini](./client-system-adapter-lib-qt/TEST_QArrowheadClientSystemAdapter/etc/arrowhead.ini) configuration file. 
 
+# client-device-adapter-lib-qt
 # QArrowheadClientDeviceAdapter
+
 ## Prerequisites
 The reader is required to have a good understanding of the Arrowhead framework before using QArrowheadClientDeviceAdapter. Please consult the [Arrowhead core repository](https://github.com/arrowhead-f/core-java-spring/tree/development/README.md) for detailed documentation with special focus on the [_Onboarding Controller_](https://github.com/arrowhead-f/core-java-spring/tree/development#onboardingcontroller), [_Device Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#deviceregistry) and [_System Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#systemregistry) core systems and their public client services.
 
@@ -323,7 +322,26 @@ The idea behind this is that such a certificate is only valid for onboarding and
 
 
 ## Initialization
-TBD
+The library must be initialized by instantiating a _QArrowheadHttpClientDeviceAdapter_ class.
+
+The constructor requires the the following parameters:
+* `std::string onboardingControllerBaseUrl` - the base URL of the Onboarding Controller core system,
+* `std::string deviceRegistryBaseUrl` (optional) - the base URL of the Device Registry core system,
+* `std::string systemRegistryBaseUrl` (optional) - the base URL of the System Registry core system
+The base URLs of Device Registry and System Registry may not be available firstly and can be set later using _setDeviceRegistryBaseUrl_ and _setSystemRegistryBaseUrl_.
+
+In addition, SSL configuration should be set by calling the _setSslConfig_ method of the previously instantiated _QArrowheadHttpClientDeviceAdapter_ class, with the proper parameters:
+* `std::string keyStoreFileName` - the name (absolute path) of the pkcs12 formatted keystore file,
+* `std::string keyStorePwd` - password to the keystore,
+* `bool disableHostNameVerification` - flag indicating the need for client-side host name verification (optional, only for testing).
+
+During the onboarding process, _setOnboardingSslConfig_ should be called to set the new configuration according to the certificate returned in the previous step.
+* `std::string certificate` - the certificate (Onboarding, Device or System Certificate) as presented in the response of the previous step,
+* `std::string privateKey` - the private key sent in the signing request
+
+### Notes
+> See [arrowhead.ini](./client-system-adapter-lib-qt/TEST_QArrowheadClientDeviceAdapter/etc/arrowhead.ini) for an example configuration file
+
 
 > Note: At the time only a preloaded Arrowhead certificate can be used for onboarding. Thus the presented client certificate shall be signed by the local cloud certificate's private key. See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#certificates) for certificate generation guide. 
 
@@ -348,6 +366,16 @@ The interface class _QArrowheadClientDeviceAdapter_ has the following public fun
 - [registerOnboardingSystemWithCsr](#registerOnboardingSystemWithCsr)
 - [unregisterSystem](#unregisterSystem)
 
+The library performs blocking network calls. Each interface funtion returns a _ReturnValue_ (defined in [QArrowheadClientCommon](#qarrowheadclientcommon)), which should be interpreted as follows:
+
+|Return value     |Condition|
+|:----------------|:--------|
+|ReturnValue::Ok  |Peer returned with the expected reply message. See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring) for the service definitions.|
+|ReturnValue::InvalidValue  |Invalid input arguments provided|
+|ReturnValue::UnknownError     |Network or peer error detected|
+|ReturnValue::Unimplemented   |Requested operation is not implemented|
+
+
 ## getOnboardingControllerEcho
 ---
 ### Signature
@@ -357,14 +385,6 @@ ReturnValue getOnboardingConrtollerEcho();
 
 ### Description
 The _getOnboardingControllerEcho_ function tests connection to the Onboarding Controller by using its _Echo_ interface.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Onboarding Controller returned a "Got it" message|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Onboarding Controller replied with internal server error|
 
 
 ## requestOnboardingWithNameAndCertificate
@@ -380,15 +400,6 @@ The _requestOnboardingWithNameAndCertificate_ function sends an Onboarding Reque
 - It requests the Onboarding Controller to generate a valid Certificate Signing Request on behalf of the requester, based on the name and key-pair passed as input arguments.
 - It outputs the Onboarding Certificate received from the Onboarding Controller, which must be used to register the device to the Device Registry.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Onboarding Controller returned a valid OnboardingWithNameResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Onboarding Controller replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## requestOnboardingWithNameAndSharedSecret
 ---
 ### Signature
@@ -401,15 +412,6 @@ The _requestOnboardingWithNameAndSharedSecret_ function sends an Onboarding Requ
 - It uses the shared secret passed as input argument to authenticate the requester with the Onboarding Controller (via HTTP basic authentication). 
 - It requests the Onboarding Controller to generate a valid Certificate Signing Request on behalf of the requester, based on the name and key-pair passed as input arguments.
 - It outputs the Onboarding Certificate received from the Onboarding Controller, which must be used to register the device to the Device Registry.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Onboarding Controller returned a valid OnboardingWithNameResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Onboarding Controller replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## requestOnboardingWithCsrAndCertificate
 ---
@@ -424,15 +426,6 @@ The _requestOnboardingWithCsrAndCertificate_ function sends an Onboarding Reques
 - It requests the Onboarding Controller to relay the Certificate Signing Request passed as input argument to the Certificate Authority.
 - It outputs the Onboarding Certificate received from the Onboarding Controller, which must be used to register the device to the Device Registry.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Onboarding Controller returned a valid OnboardingWithNameResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Onboarding Controller replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## requestOnboardingWithCsrAndSharedSecret
 ---
 ### Signature
@@ -446,15 +439,6 @@ The _requestOnboardingWithCsrAndSharedSecret_ function sends an Onboarding Reque
 - It requests the Onboarding Controller to relay the Certificate Signing Request passed as input argument to the Certificate Authority.
 - It outputs the Onboarding Certificate received from the Onboarding Controller, which must be used to register the device to the Device Registry.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Onboarding Controller returned a valid OnboardingWithNameResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Onboarding Controller replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## getDeviceRegistryEcho
 ---
 ### Signature
@@ -465,14 +449,6 @@ ReturnValue getDeviceRegistryEcho();
 ### Description
 The _getDeviceRegistryEcho_ function tests connection to the Device Registry by using its _Echo_ interface.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned a "Got it" message|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-
 ## queryDevice
 ---
 ### Signature
@@ -482,15 +458,6 @@ ReturnValue queryDevice(const DeviceQueryForm& deviceQueryForm, std::unique_ptr<
 
 ### Description
 The _queryDevice_ function queries the Device Registry for the presence of the indicated device.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned a valid DeviceQueryList|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## registerDevice
 ---
@@ -503,15 +470,6 @@ ReturnValue registerDevice(const DeviceRegistrationForm& deviceRegistrationForm,
 The _registerDevice_ function registers a device to the Device Registry.
 > It does not return any device certificate.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned a valid DeviceRegistryEntry|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## registerOnboardingDeviceWithName
 ---
 ### Signature
@@ -521,15 +479,6 @@ ReturnValue registerOnboardingDeviceWithName(const DeviceOnboardingWithNameReque
 
 ### Description
 The registerOnboardingDeviceWithName function registers a device to the Device Registry and returns a device certificate, which must be used to register systems to the System Registy during the onboarding procedure. The CSR is constructed by the Device Registry based on the information passed as input arguments.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned a valid DeviceOnboardingResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## registerOnboardingDeviceWithCsr
 ---
@@ -541,15 +490,6 @@ ReturnValue registerOnboardingDeviceWithCsr(const DeviceOnboardingWithCsrRequest
 ### Description
 The registerOnboardingDeviceWithCsr function registers a device to the Device Registry and returns a device certificate, which must be used to register systems to the System Registy during the onboarding procedure. The CSR is constructed by the caller and must be passed via the input argument.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned a valid DeviceOnboardingResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## unregisterDevice
 ---
 ### Signature
@@ -559,15 +499,6 @@ ReturnValue unregisterDevice(const DeviceRegistryEntry& deviceRegistryEntry);
 
 ### Description
 The _unregisterDevice_ function deregisters the indicated device from the Device Registry.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |Device Registry returned OK|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |Device Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## getSystemRegistryEcho
 ---
@@ -579,14 +510,6 @@ ReturnValue getSystemRegistryEcho();
 ### Description
 The _getSystemRegistryEcho_ function tests connection to the System Registry by using its _Echo_ interface.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned a "Got it" message|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-
 ## querySystem
 ---
 ### Signature
@@ -596,15 +519,6 @@ ReturnValue querySystem(const SystemQueryForm& systemQueryForm, std::unique_ptr<
 
 ### Description
 The _querySystem_ function queries the System Registry for the presence of the indicated system.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned a valid SystemQueryList|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## registerSystem
 ---
@@ -617,15 +531,6 @@ ReturnValue registerSystem(const SystemRegistrationForm& systemRegistrationForm,
 The _registerSystem_ function registers a system to the System Registry.
 > It does not return any system certificate.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned a valid SystemRegistryEntry|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## registerOnboardingSystemWithName
 ---
 ### Signature
@@ -635,15 +540,6 @@ ReturnValue registerOnboardingSystemWithName(const SystemOnboardingWithNameReque
 
 ### Description
 The registerOnboardingSystemWithName function registers a system to the System Registry and returns a system certificate, which must be used to register services to the Service Registy during the onboarding procedure and to query the Orchestrator for service providers. The CSR is constructed by the System Registry based on the information passed as input arguments.
-
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned a valid SystemOnboardingResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
 
 ## registerOnboardingSystemWithCsr
 ---
@@ -655,15 +551,6 @@ ReturnValue registerOnboardingSystemWithCsr(const SystemOnboardingWithCsrRequest
 ### Description
 The registerOnboardingSystemWithCsr function registers a system to the System Registry and returns a system certificate, which must be used to register services to the Service Registy during the onboarding procedure and to query the Orchestrator for service providers. The CSR is constructed by the caller and must be passed via the input argument.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned a valid SystemOnboardingResponse|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## unregisterSystem
 ---
 ### Signature
@@ -674,21 +561,15 @@ ReturnValue unregisterSystem(const SystemRegistryEntry& systemRegistryEntry);
 ### Description
 The _unregisterSystem_ function deregisters the indicated system from the System Registry.
 
-### Return value
-
-|Return value     |Condition|
-|:----------------|:--------|
-|ReturnValue::Ok  |System Registry returned OK|
-|ReturnValue::NetworkError  |No reply message received|
-|ReturnValue::PeerError     |System Registry replied with internal server error|
-|ReturnValue::InvalidValue  |Input argument is invalid|
-
 ## Data Types
-The data classes implemented by the library are specified by the requested Arrowhead core services. The definition of the input forms and output responses can be found in the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring#documentation). Some of them contains fields that are not relevant for the clients (e.g. entry id in the registry databases). Those fields are ignored in the library implementation.
+The data classes implemented by the library are specified by the requested Arrowhead core services. The definition of the input forms and output responses can be found in the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring#documentation).
 The Class Diagram of the library is presented below:
 
 ![QArrowheadClientDeviceAdapter Class Diagram](./client-device-adapter-lib-qt/QArrowheadClientDeviceAdapter/doc/QArrowheadClientDeviceAdapter_ClassDiagram.png)
 *QArrowheadClientDeviceAdapter Class Diagram*
+
+## TEST_QArrowheadClientDeviceAdapter
+_TEST_QArrowheadClientDeviceAdapter_ is a Qt Test application implementing unit tests for _QArrowheadClientDeviceAdapter_. For the unit tests to pass, the following Arrowhead core systems are required to be available: _Onboarding Controller_, _Device Registry_, _System Registry_. The core service endpoints and the parameters of the adapted client system and services must be defined in the [arrowhead.ini](./client-device-adapter-lib-qt/TEST_QArrowheadClientDeviceAdapter/etc/arrowhead.ini) configuration file. 
 
 
 # QArrowheadClientAdapterApp

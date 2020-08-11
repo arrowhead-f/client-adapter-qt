@@ -87,8 +87,7 @@ void TestQArrowheadHttpClientSystemAdapter::getServiceRegistryEcho()
 
 void TestQArrowheadHttpClientSystemAdapter::queryService()
 {
-    ArrowheadServiceRequirement requestedService =
-            ArrowheadServiceRequirement::builder()
+    ArrowheadServiceRequirement requestedService = ArrowheadServiceRequirement::builder()
             .setServiceDefinitionRequirement(requestedServiceDefinition)
             .build();
     std::unique_ptr<ServiceQueryList> uptr_serviceQueryList;

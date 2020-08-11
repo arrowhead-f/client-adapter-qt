@@ -22,6 +22,7 @@ enum CertificateType{
     AH_ONBOARDING
     AH_DEVICE
     AH_SYSTEM
+    INVALID
 }
 
 hide enum empty members

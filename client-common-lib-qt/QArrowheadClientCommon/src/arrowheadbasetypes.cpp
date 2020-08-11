@@ -108,6 +108,9 @@ ArrowheadService ArrowheadService::fromJsonObject(const QJsonObject& jsonObject)
     }
     int version = jsonObject["version"].toInt();
     std::string serviceUri = jsonObject["serviceUri"].toString().toStdString();
+    if(serviceUri.empty()){
+        serviceUri = jsonObject["uri"].toString().toStdString();
+    }
     std::string endOfValidity = jsonObject["endOfValidity"].toString().toStdString();
     return ArrowheadService(serviceDefinition,
                             interfaces,
