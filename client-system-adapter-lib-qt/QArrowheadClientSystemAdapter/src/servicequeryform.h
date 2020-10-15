@@ -22,12 +22,13 @@
 #ifndef SERVICEQUERYFORM_H
 #define SERVICEQUERYFORM_H
 
+#include "qarrowheadclientcommon_global.h"
 #include "arrowheadservicerequirement.h"
 #include <QJsonObject>
 
 namespace arrowhead{
 
-struct ServiceQueryForm
+struct QAHSYSADAPTER_EXPORT ServiceQueryForm
 {
     ArrowheadServiceRequirement requestedService;
     bool pingProviders;
@@ -43,7 +44,7 @@ private:
         pingProviders(pingProviders) {}
 };
 
-struct ServiceQueryForm::builder{
+struct QAHSYSADAPTER_EXPORT ServiceQueryForm::builder{
 private:
     ArrowheadServiceRequirement requestedService;
     bool pingProviders = false;

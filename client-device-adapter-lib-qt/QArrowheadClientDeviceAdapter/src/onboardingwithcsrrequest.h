@@ -22,12 +22,13 @@
 #ifndef ONBOARDINGWITHCSRREQUEST_H
 #define ONBOARDINGWITHCSRREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include <string>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-    struct OnboardingWithCsrRequest{
+    struct QAHDEVADAPTER_EXPORT OnboardingWithCsrRequest{
         std::string certificateSigningRequest;
 
         OnboardingWithCsrRequest() = default;

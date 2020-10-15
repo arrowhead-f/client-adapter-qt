@@ -76,7 +76,7 @@ void TestQArrowheadHttpClientSystemAdapter::initTestCase()
                 serviceRegistryBaseUrl, authorizationBaseUrl, orchestratorBaseUrl,
                 std::move(clientSystem));
     if(sslEnabled){
-        ahAdapter->setSslConfig(keyStore, keyStorePwd, disableHostnameVerification);
+        ahAdapter->getHttpClient().setSslConfig(keyStore, keyStorePwd, disableHostnameVerification);
     }
 }
 
@@ -85,7 +85,7 @@ void TestQArrowheadHttpClientSystemAdapter::getServiceRegistryEcho()
     QCOMPARE(ReturnValue::Ok, ahAdapter->getServiceRegistryEcho());
 }
 
-void TestQArrowheadHttpClientSystemAdapter::queryService()
+/*void TestQArrowheadHttpClientSystemAdapter::queryService()
 {
     ArrowheadServiceRequirement requestedService = ArrowheadServiceRequirement::builder()
             .setServiceDefinitionRequirement(requestedServiceDefinition)
@@ -106,7 +106,7 @@ void TestQArrowheadHttpClientSystemAdapter::queryService()
             }
         }
     }
-}
+}*/
 
 void TestQArrowheadHttpClientSystemAdapter::registerService()
 {

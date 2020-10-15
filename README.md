@@ -1,14 +1,14 @@
 # client-adapter-qt
 
 ## Overview
-The _client-adapter-qt_ software package enables application developers and system integrators to create distributed IIoT solutions in compliance with the Arrowhead framework specification by delivering client-side implementation of the standard Arrowhead core services (version 4.1.3). _client-adapter-qt_ makes use of Qt/C++ technology. It is released both as a set of static software libraries for application developers and as executable configuration tool for system integrators. 
+The _client-adapter-qt_ software package enables application developers and system integrators to create distributed IIoT solutions in compliance with the Arrowhead framework specification by delivering client-side implementation of the standard Arrowhead core services (version 4.1.3). _client-adapter-qt_ makes use of Qt/C++ technology. It is released both as a set of shared software libraries for application developers and as executable configuration tool for system integrators. 
 
 Figure 1 illustrates how software developers and system integrators can use _client-adapter-qt_ software to integrate their applications with the Arrowhead framework.
 
 ![_client-adapter-qt_ users](doc/client-adapter-qt_users.png)
 *Figure 1 - Target users of _client-adapter-qt_*
 
-The low-level software libraries are extended with _REST_ and _DBus_ interfaces and packaged together with their dependencies in order to form docker images, thus enabling easy deployment without any coding efforts. This structure is depicted in Figure 2. 
+The software artefacts are packaged together with their dependencies in order to form docker images, thus enabling easy deployment. This structure is depicted in Figure 2. 
 
 ![_client-adapter-qt_ structure](doc/client-adapter-qt_structure.png)
 *Figure 2 - _client-adapter-qt_ structure*
@@ -18,35 +18,62 @@ The docker images can be downloaded to docker-enabled edge computers in order to
 ![_client-adapter-qt_ docker](doc/client-adapter-qt_docker.png)
 *Figure 3 - _client-adapter-qt_ with docker infrastructure*
 
-## Repository structure
-- [client-adapter-qt](#documentation)
-  - [client-common-lib-qt](#client-common-lib-qt) 
-    - [QArrowheadClientCommon](#qarrowheadclientcommon) 
-    - [TEST_QArrowheadClientCommon](#test_qarrowheadclientcommon) 
-  - [client-system-adapter-lib-qt](#client-system-adapter-lib-qt)
-    - [QArrowheadClientSystemAdapter](#qarrowheadclientsystemadapter)
-    - [TEST_QArrowheadClientSystemAdapter](#test_qarrowheadclientsystemadapter)
-  - [client-device-adapter-lib-qt](#client-device-adapter-lib-qt)
-    - [QArrowheadClientDeviceAdapter](#qarrowheadclientdeviceadapter)
-    - [TEST_QArrowheadClientDeviceAdapter](#test_qarrowheadclientdeviceadapter)
-  - client-adapter-app-qt
-    - QArrowheadClientAdapterApp
-    - TEST_QArrowheadClientAdapterApp
+## Getting started
 
-## Dependencies
+### Deploy with Docker
 
+You can start using _client-adapter-qt_ software by downloading pre-built Docker images and creating containers with a few simple commands. Please refer to the [official documentation of Docker](https://www.docker.com/get-started) on how to install the Docker platform, download images and run your containers. You can use the following two images:
+
+- arrowhead-client-base
+  - Contains arrowhead _client-adapter-qt_ shared libraries that deliver client-side implementation of the standard Arrowhead core services (version 4.1.3)
+  - This image serves as a base image for Arrowhead client applications. Build your own Docker image starting FROM _arrowhead_client_base_ and link your client application to the _client-adapter-qt_ shared libraries.
+  - Available on docker-hub: [arrowhead-client-base](https://hub.docker.com/r/davidjenei/arrowhead-client-base)
+  - [Installation manual](doc/ah_base_image_installation_manual.md)
+- arrowhead-client-cli
+  - Contains arrowhead client adapter CLI application that offers an easy-to-use user interface for legacy system integration to the Arrowhead framework
+  - Available on docker-hub: [arrowhead-client-cli](https://hub.docker.com/r/davidjenei/arrowhead-client-cli)
+  - [Installation manual](doc/ah_cli_image_installation_manual.md)
+
+### Build from source
+
+_client-adapter-qt_ is a [qmake SUBDIRS project](https://wiki.qt.io/SUBDIRS_-_handling_dependencies). You need the following tools to build it from source:
+
+- [qmake](https://doc.qt.io/qt-5/qmake-manual.html)
 - [Qt Essentials (5.12 LTS)](https://doc.qt.io/qt-5/qtmodules.html)
+- c++ compiler
+
+Get Qt including qmake, Qt Essentials (and more) from [here](https://www.qt.io/download).
 
 ## Contribution
 
-Questions, comments, proposals related to _client-adapter-qt_ are always welcome. Please send an email to balint.peceli at eilabs dot com or open a pull request with your modifications.
+Questions, comments, proposals related to _client-adapter-qt_ are always welcome. Please send an email to balint.peceli at eilabs dot com or open a pull request [on github](https://github.com/arrowhead-f/client-adapter-qt) with your modifications.
 
 ## License
-_client-adapter-qt_ is licensed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
+_client-adapter-qt_ is licensed under the [GNU LESSER GENERAL PUBLIC LICENSE Version 3](https://www.gnu.org/licenses/lgpl-3.0.en.html).
 
 ## Documentation
+## Table of Contents
+
+- [client-common-lib-qt](#client-common-lib-qt) 
+  - [QArrowheadClientCommon](#qarrowheadclientcommon) 
+  - [TEST_QArrowheadClientCommon](#test_qarrowheadclientcommon) 
+- [client-system-adapter-lib-qt](#client-system-adapter-lib-qt)
+  - [QArrowheadClientSystemAdapter](#qarrowheadclientsystemadapter)
+  - [TEST_QArrowheadClientSystemAdapter](#test_qarrowheadclientsystemadapter)
+- [client-device-adapter-lib-qt](#client-device-adapter-lib-qt)
+  - [QArrowheadClientDeviceAdapter](#qarrowheadclientdeviceadapter)
+  - [TEST_QArrowheadClientDeviceAdapter](#test_qarrowheadclientdeviceadapter)
+- [client-adapter-app-qt](#client-adapter-app-qt)
+  - [QArrowheadClientAdapterApp](#qarrowheadclientadapterapp)
+  - [TEST_QArrowheadClientAdapterApp](#test_qarrowheadclientadapterapp)
+- [Arrowhead Client Adapter Docker Images](#arrowhead-client-adapter-docker-images)
+
 # client-common-lib-qt
+
+_client-common-lib-qt_ is a qmake subdirs project hosting the source code of _QArrowheadClientCommon_ and its related unit tests: _TEST_QArrowheadClientCommon_.
+
 ## QArrowheadClientCommon
+
 _QArrowheadClientCommon_ is a base library containing the definitions of Arrowhead data types like _ArrowheadCloud_, _ArrowheadSystem_ and _ArrowheadService_.
 
 ### Data Types
@@ -62,32 +89,35 @@ The compiled library will be deployed to the target directory defined in the [pr
 _TEST_QArrowheadClientCommon_ is a Qt Test application implementing unit tests for _QArrowheadClientCommon_.
 
 # client-system-adapter-lib-qt
+_client-system-adapter-lib-qt_ is a qmake subdirs project hosting the source code of _QArrowheadClientSystemAdapter_ and its related unit tests: _TEST_QArrowheadClientSystemAdapter_.
+
 ## QArrowheadClientSystemAdapter
 
 ## Prerequisites
-The reader is required to have a good understanding of the Arrowhead framework before using _QArrowheadClientSystemAdapter_. Please consult the [Arrowhead core repository](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md) for detailed documentation with special focus on the [_Service Registry_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#serviceregistry), [_Authorization_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#authorization) and [_Orchestrator_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#orchestrator) core systems and their public client services.
+The reader is required to have a good understanding of the Arrowhead framework before using _QArrowheadClientSystemAdapter_. Please consult the [Arrowhead core repository](https://github.com/arrowhead-f/core-java-spring) for detailed documentation with special focus on the [_Service Registry_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#serviceregistry), [_Authorization_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#authorization) and [_Orchestrator_](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#orchestrator) core systems and their public client services.
 
 ## Specification
 - Qt/C++ software library
   - Qt version: 5.12 LTS
-  - Compiled and released as static library
+  - Compiled and released as dynamic library
 - Implements Arrowhead client functionalities
   - Client-side implementation of mandatory core services
   - Supported Arrowhead version: 4.1.3
-- Service Registry interface
-  - echo
-  - register
-  - unregister
-  - query
-- Authorization interface
-  - echo
-  - get public key
-- Orchestrator interface
-  - echo
-  - request orchestration
-  - start store orchestration by id
-- Target users:
-  - software developers responsible for creating Arrowhead-compliant application systems and services
+- Supported core interfaces
+  - Service Registry interface
+    - echo
+    - register
+    - unregister
+    - query
+  - Authorization interface
+    - echo
+    - get public key
+  - Orchestrator interface
+    - echo
+    - request orchestration
+    - start store orchestration by id
+  - Target users:
+    - software developers responsible for creating Arrowhead-compliant application systems and services
 
 ## Initialization
 The library must be initialized by instantiating a _QArrowheadHttpClientSystemAdapter_ class.
@@ -107,7 +137,7 @@ In addition, SSL configuration should be set by calling the _setSslConfig_ metho
 > See [arrowhead.ini](./client-system-adapter-lib-qt/TEST_QArrowheadClientSystemAdapter/etc/arrowhead.ini) for an example configuration file
 
 
-> The presented client certificate shall be signed by the local cloud certificate's private key. See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring/blob/master/README.md#certificates) for certificate generation guide. 
+> The presented client certificate shall be signed by the local cloud certificate's private key. See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring/#certificates) for certificate generation guide. 
 
 
 
@@ -123,7 +153,7 @@ The interface class _QArrowheadClientSystemAdapter_ has the following public fun
 - [requestOrchestration](#requestOrchestration)
 - [requestOrchestrationById](#requestOrchestrationById)
 
-The library performs blocking network calls. Each interface funtion returns a _ReturnValue_ (defined in [QArrowheadClientCommon](#qarrowheadclientcommon)), which should be interpreted as follows:
+The library performs blocking network calls. Each interface function returns a _ReturnValue_ (defined in [QArrowheadClientCommon](#qarrowheadclientcommon)), which should be interpreted as follows:
 
 |Return value     |Condition|
 |:----------------|:--------|
@@ -222,7 +252,7 @@ ReturnValue requestOrchestration(const ServiceRequestForm& serviceRequestForm, s
 The _requestOrchestration_ function requests service orchestration from the Orchestrator.
 
 ### Notes
-> The default orchestration-method is store-based orchestration. Dynamic orchestration request shall be specified by setting the _overrideStore_ orchestration flag in the _ServiceRequestForm_. See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring#dynamic-orchestration-1) for further details.
+> The default orchestration-method is store-based orchestration. Dynamic orchestration request shall be specified by setting the _overrideStore_ orchestration flag in the [_ServiceRequestForm_](https://github.com/arrowhead-f/core-java-spring#datastructures_servicerequestform). See the [Arrowhead core documentation](https://github.com/arrowhead-f/core-java-spring#dynamic-orchestration-1) for further details.
 
 
 ## requestOrchestrationById
@@ -249,31 +279,34 @@ The compiled library will be deployed to the target directory defined in the [pr
 _TEST_QArrowheadClientSystemAdapter_ is a Qt Test application implementing unit tests for _QArrowheadClientSystemAdapter_. For the unit tests to pass, the following Arrowhead core systems are required to be available: _Service Registry_, _Authorization_, _Orchestrator_. The core service endpoints and the parameters of the adapted client system and services must be defined in the [arrowhead.ini](./client-system-adapter-lib-qt/TEST_QArrowheadClientSystemAdapter/etc/arrowhead.ini) configuration file. 
 
 # client-device-adapter-lib-qt
+_client-device-adapter-lib-qt_ is a qmake subdirs project hosting the source code of _QArrowheadClientDeviceAdapter_ and its related unit tests: _TEST_QArrowheadClientDeviceAdapter_.
+
 # QArrowheadClientDeviceAdapter
 
 ## Prerequisites
-The reader is required to have a good understanding of the Arrowhead framework before using QArrowheadClientDeviceAdapter. Please consult the [Arrowhead core repository](https://github.com/arrowhead-f/core-java-spring/tree/development/README.md) for detailed documentation with special focus on the [_Onboarding Controller_](https://github.com/arrowhead-f/core-java-spring/tree/development#onboardingcontroller), [_Device Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#deviceregistry) and [_System Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#systemregistry) core systems and their public client services.
+The reader is required to have a good understanding of the Arrowhead framework before using QArrowheadClientDeviceAdapter. Please consult the [Arrowhead core repository](https://github.com/arrowhead-f/core-java-spring) for detailed documentation with special focus on the [_Onboarding Controller_](https://github.com/arrowhead-f/core-java-spring/tree/development#onboardingcontroller), [_Device Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#deviceregistry) and [_System Registry_](https://github.com/arrowhead-f/core-java-spring/tree/development#systemregistry) core systems and their public client services.
 
 ## Specification
 - Qt/C++ software library
   - Qt version: 5.12 LTS
-  - Compiled and released
+  - Compiled and released as both static and dynamic library
 - Implements Arrowhead onboarding client functionalities
   - Client-side implementation of onboarding core services
   - Supported Arrowhead version: 4.1.3
-- System Registry interface
-  - register
-  - unregister
-  - query
-- Device Registry interface
-  - register
-  - unregister
-  - query
-- Onboarding interface
-  - Onboarding with certificate and name
-  - Onboarding with certificate and csr
-  - Onboarding with shared secret and name
-  - Onboarding with shared secret and csr
+- Supported core interfaces
+  - System Registry interface
+    - register
+    - unregister
+    - query
+  - Device Registry interface
+    - register
+    - unregister
+    - query
+  - Onboarding interface
+    - Onboarding with certificate and name
+    - Onboarding with certificate and csr
+    - Onboarding with shared secret and name
+    - Onboarding with shared secret and csr
 - Target users:
   - software developers responsible for creating Arrowhead-compliant application systems and services
 
@@ -306,19 +339,15 @@ If a service is registrered in the service registry, the service registry will a
 > Remarks:
 > - 1B), 1C) is actually the same step. In both cases the certificate authority verifies the certificates (invoked by onboarding controller). _Currently_ the onboarding controller tries to verify the certificate itself and will let almost everything through.
 > - 1\) There is a clear separation between authentication (1A or 1B) and method of onboarding. 
-Either the client lets the onboarding controller create a certificate signing request (CSR) or the client needs to provide a CSR.
+> Either the client lets the onboarding controller create a certificate signing request (CSR) or the client needs to provide a CSR.
 > - 3\) If the onboarding controller generates the CSR, then the resulting certificate will have an additional part in the commonName denominating the certificate type: "\<XXX>.onboarding.testCloud2.aitia.arrowhead.eu".
-Such a certificate will not be arrowhead compliant and only be accepted during the onboarding procedure by the device registry. 
-This will be even reflected in future through the validity date of the certificate. In future, the onboarding and device certificates will have a very short validity.
+> Such a certificate will not be arrowhead compliant and only be accepted during the onboarding procedure by the device registry. 
+> This will be even reflected in future through the validity date of the certificate. In future, the onboarding and device certificates will have a very short validity.
 > - 5\) This time the result certificate is arrowhead compliant and accepted everywhere. “systemName”=”myDataGateway”, “commonName”=”myDataGateway.testCloud2.aitia.arrowhead.eu”
->- 	The regular register methods of the Device and System Registries can be used by the clients/devices if they possess the required onboarding/device cert already, but they don’t need any new cert in the response.
->    - With the onboarding certificate, the client may unregister its device. 
-It can not register its device because it would not be able to contact the next system. For registering its device, it needs a device certificate (or an arrowhead compliant certificate).
->    - Similarly, with the device certificate, the client may unregister its system. 
-It can not register its system because it would not be able to contact the next system. For registering its system, it needs a (arrowhead compliant) system certificate.
->-	The certificates used in the procedure are “client certificates” according to the definition given here: https://github.com/arrowhead-f/core-java-spring/tree/development#certificates
+> - The regular register endpoints (in contrast to the onboarding endpoints) of the Device and System Registries can be used by the clients/devices if they possess the required onboarding/device cert already, but they don’t need any new cert in the response.
+> -	The certificates used in the procedure are “client certificates” according to the definition given [here](https://github.com/arrowhead-f/core-java-spring/#certificates)
 >    - Exception: If the onboarding controller or device registry creates the CSR on behalf of the client, the resulting certificate will not be compliant with that definition. 
-The idea behind this is that such a certificate is only valid for onboarding and is not to be trusted by any other system in arrowhead. 
+> The idea behind this is that such a certificate is only valid for onboarding and is not to be trusted by any other systems in Arrowhead. 
 
 
 ## Initialization
@@ -571,50 +600,49 @@ The Class Diagram of the library is presented below:
 ## TEST_QArrowheadClientDeviceAdapter
 _TEST_QArrowheadClientDeviceAdapter_ is a Qt Test application implementing unit tests for _QArrowheadClientDeviceAdapter_. For the unit tests to pass, the following Arrowhead core systems are required to be available: _Onboarding Controller_, _Device Registry_, _System Registry_. The core service endpoints and the parameters of the adapted client system and services must be defined in the [arrowhead.ini](./client-device-adapter-lib-qt/TEST_QArrowheadClientDeviceAdapter/etc/arrowhead.ini) configuration file. 
 
+# client-adapter-app-qt
 
 # QArrowheadClientAdapterApp
-## Specification
-- Configurable software application
-- Using QArrowheadClientSystemAdapter and QArrowheadClientDeviceAdapter
-- Providing command line interface:
-  - service registration/deregistration/query
-  - orchestration request
+The _QArrowheadClientAdapterApp_ provides an easy-to-use command line interface for:
+
+  - onboarding with name based on certificate
   - system and device registration/deregistration/query
-  - onboarding with name/csr based on certificate/shared secret
+  - service registration/deregistration
+  - orchestration request
   - certificate handling
-- Target users:
-  - System integrators responsible for making application systems interoperable using the Arrowhead framework (without any coding)
-  - System integrators willing to attach standalone systems quickly ("on-demand") to the Arrowhead local cloud
-  - Arrowhead demo developer
 
-# Arrowhead Client Adapter Docker Images
-## Arrowhead Client System Adapter Docker Base Image
--	QArrowheadClientSystemAdapter packaged together with its dependencies (Qt framework)
+## User manual
+
+Please follow [this link](client-adapter-app-qt/QArrowheadClientAdapterApp/doc/ah_cli_app_user_manual.md) for the User manual.
+
+## Developer manual
+Please follow [this link](client-adapter-app-qt/QArrowheadClientAdapterApp/doc/ah_cli_app_developer_manual.md) for the Developer manual.
+
+## TEST_QArrowheadClientAdapterApp
+_TEST_QArrowheadClientAdapterApp_ is a Qt Test application implementing unit tests for the main classes of _QArrowheadClientAdapterApp_. For the unit tests to pass, the following Arrowhead core systems are required to be available: _Service Registry_, _Authorization_, _Orchestrator_, _Onboarding Controller_, _Device Registry_, _System Registry_, _Certificate Authority_. 
+
+
+# Arrowhead Client Adapter Docker Images 
+
+## arrowhead-client-base
+-	Client adapter libraries packaged together with their dependencies (Qt framework)
+  - Dynamic libraries: [QArrowheadClientCommon](#qarrowheadclientcommon), [QArrowheadClientSystemAdapter](#qarrowheadclientsystemadapter), [QArrowheadClientDeviceAdapter](#qarrowheadclientdeviceadapter)
 -	Docker base image for creating ML2 and ML3 user application integration 
+  -	Arrowhead maturity level 2: "The application system implements the consumption (AND/OR) production Arrowhead Framework services by using a software adaptor. The application system is thus modified by integrating the software adaptor into the system."
+  -	Arrowhead maturity level 3: "The application system implements the consumption (AND/OR) production of Arrowhead Framework compliant services without using any external components."
 - Target users:
-  - System integrators responsible for making application systems interoperable using the Arrowhead framework (without any coding)
+  - Software developers implementing Arrowhead enabled application systems
+- Sources: 
+  - [Dockerfile](./Dockerfile)
+  - [Build instructions](./Build.md)
 
-## Arrowhead Client System Adapter Docker Image - Maturity Level 2
--	Arrowhead Client System Adapter for legacy system integration
--	Standalone docker image for Arrowhead Adaptor functionality (cf. Maturity Level 2)
--	Using Arrowhead Client System Adapter Docker Base Image
--	Using REST interface of Arrowhead Client System Adapter service
--	Legacy application deployed in a separate docker container
--	Docker-level interfaces
--	Cross-docker communication
-    - Docker virtual network used for communication between legacy app and Arrowhead Adaptor
--	Arrowhead maturity level 2: "The application system implements the consumption (AND/OR) production Arrowhead Framework services by using a software adaptor. The application system is thus modified by integrating the software adaptor into the system."
+## arrowhead-client-cli
+-	Using [arrowhead-client-base](#arrowhead-client-base)
+-	Including [QArrowheadClientAdapterApp](#qarrowheadclientadapterapp)
+-	Enabling Arrowhead ML2 and ML3 application system integration
+    -	Arrowhead maturity level 2: "The application system implements the consumption (AND/OR) production Arrowhead Framework services by using a software adaptor. The application system is thus modified by integrating the software adaptor into the system."
+    -	Arrowhead maturity level 3: "The application system implements the consumption (AND/OR) production of Arrowhead Framework compliant services without using any external components."
 -	Target users:
     -	System integrators responsible for making application systems interoperable using the Arrowhead framework (without any coding)
-
-## Arrowhead Client System Adapter Docker Image - Maturity Level 3
--	Arrowhead Client System Adapter for legacy system integration
--	Integrated docker image (cf. Maturity Level 3)
-    -	Legacy user application
-    -	Arrowhead Client System Adapter functionality
--	Using Arrowhead Client System Adapter Docker Base Image
--	Using D-Bus interface of Arrowhead Client System Adapter service
--	No cross-docker communication needed
--	Arrowhead maturity level 3: "The application system implements the consumption (AND/OR) production of Arrowhead Framework compliant services without using any external components."
--	Target users:
-    -	System integrators responsible for making application systems interoperable using the Arrowhead framework (without any coding)
+-	Sources: 
+    - [Dockerfile](./Dockerfile-cli)

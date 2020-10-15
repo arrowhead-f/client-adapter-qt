@@ -22,15 +22,16 @@
 #ifndef ARROWHEADSERVICEREQUIREMENT_H
 #define ARROWHEADSERVICEREQUIREMENT_H
 
-#include "common.h"
+#include "qarrowheadclientsystemadapter_global.h"
 #include "arrowheadbasetypes.h"
+#include "common.h"
 #include <string>
 #include <vector>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct ArrowheadServiceRequirement
+struct QAHSYSADAPTER_EXPORT ArrowheadServiceRequirement
 {
     std::string serviceDefinitionRequirement;
     stringvector interfaceRequirements;
@@ -61,7 +62,7 @@ private:
                     maxVersionRequirement(maxVersionRequirement) {}
 };
 
-struct ArrowheadServiceRequirement::builder{
+struct QAHSYSADAPTER_EXPORT ArrowheadServiceRequirement::builder{
 private:
     std::string serviceDefinitionRequirement;
     stringvector interfaceRequirements;

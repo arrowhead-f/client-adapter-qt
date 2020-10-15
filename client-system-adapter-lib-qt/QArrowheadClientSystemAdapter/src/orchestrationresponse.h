@@ -22,13 +22,14 @@
 #ifndef ORCHESTRATIONRESPONSE_H
 #define ORCHESTRATIONRESPONSE_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "orchestrationentry.h"
 #include <vector>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct OrchestrationResponse
+struct QAHSYSADAPTER_EXPORT OrchestrationResponse
 {
     std::vector<OrchestrationEntry> orchEntryVector;
 

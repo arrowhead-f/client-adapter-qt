@@ -22,27 +22,20 @@
 #ifndef QARROWHEADHTTPCLIENTSYSTEMADAPTER_H
 #define QARROWHEADHTTPCLIENTSYSTEMADAPTER_H
 
+#include "qarrowheadclientsystemadapter_global.h"
+#include "httpclient.h"
 #include "qarrowheadclientsystemadapter.h"
 #include <QSslConfiguration>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <QSslKey>
 
 namespace arrowhead {
 
-class QArrowheadHttpClientSystemAdapter : public QArrowheadClientSystemAdapter
+class QAHSYSADAPTER_EXPORT QArrowheadHttpClientSystemAdapter : public QArrowheadClientSystemAdapter
 {
 public:
-    QArrowheadHttpClientSystemAdapter(
-            std::string serviceRegsitryBaseUrl,
-            std::string authorizationBaseUrl,
-            std::string orchestratorBaseUrl,
-            std::unique_ptr<ArrowheadSystem> clientSystem) :
-        QArrowheadClientSystemAdapter (serviceRegsitryBaseUrl,
-                                       authorizationBaseUrl,
-                                       orchestratorBaseUrl,
-                                       std::move(clientSystem)) {}
-
-    ReturnValue setSslConfig(std::string p12FileName, std::string password, bool disableHostnameVerification=false);
+    using QArrowheadClientSystemAdapter::QArrowheadClientSystemAdapter;
 
     // Service Registry interface
     ReturnValue getServiceRegistryEcho();
@@ -59,14 +52,12 @@ public:
     ReturnValue requestOrchestration(const ServiceRequestForm& serviceRequestForm, std::unique_ptr<OrchestrationResponse>& uptr_orchestrationResponse);
     ReturnValue requestOrchestrationById(const int &storeEntryId, std::unique_ptr<OrchestrationResponse>& uptr_orchestrationResponse);
 
+    HttpClient& getHttpClient(){
+        return httpClient;
+    }
+
 private:
-    ReturnValue performHttpOperation(QNetworkAccessManager::Operation operationType,
-                                     std::unique_ptr<QNetworkRequest> &request, std::unique_ptr<QNetworkReply> &reply,
-                                     std::shared_ptr<const QByteArray> payload = nullptr);
-    const QString typeToString(const QNetworkAccessManager::Operation &operationType) const;
-    QNetworkAccessManager qnam;
-    QSslConfiguration sslConfig;
-    bool disableHostnameVerification=false;
+    HttpClient httpClient;
 };
 
 }

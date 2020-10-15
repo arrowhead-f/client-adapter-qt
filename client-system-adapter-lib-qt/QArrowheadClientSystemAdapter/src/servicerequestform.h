@@ -22,6 +22,7 @@
 #ifndef SERVICEREQUESTFORM_H
 #define SERVICEREQUESTFORM_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "common.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheadservicerequirement.h"
@@ -31,7 +32,7 @@
 
 namespace arrowhead {
 
-struct ServiceRequestForm
+struct QAHSYSADAPTER_EXPORT ServiceRequestForm
 {
     struct PreferredProvider{
         ArrowheadCloud providerCloud;
@@ -74,7 +75,7 @@ private:
         orchestrationFlags(orchestrationFlags) {}
 };
 
-struct ServiceRequestForm::builder{
+struct QAHSYSADAPTER_EXPORT ServiceRequestForm::builder{
 private:
     ArrowheadServiceRequirement requestedService;
     ArrowheadSystem requesterSystem;

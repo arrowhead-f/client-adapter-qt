@@ -22,6 +22,7 @@
 #ifndef HTTPCLIENT_H
 #define HTTPCLIENT_H
 
+#include "qarrowheadclientcommon_global.h"
 #include "common.h"
 #include <memory>
 #include <QNetworkAccessManager>
@@ -29,7 +30,7 @@
 
 namespace arrowhead {
 
-class HttpClient
+class QARROWHEADCLIENTCOMMON_EXPORT HttpClient
 {
 public:
     enum class AuthenticationMethod{
@@ -56,7 +57,7 @@ public:
             std::string keyFileName,
             std::string password,
             bool disableHostnameVerification=false);
-    ReturnValue setOnboardingSslConfig(std::string certificate, std::string privateKey);
+    ReturnValue setLocalCert(std::string certificate, std::string privateKey, bool fromFile=true);
     ReturnValue setSharedSecret(std::string sharedSecret);
     ReturnValue performHttpOperation(QNetworkAccessManager::Operation operationType,
                                      std::unique_ptr<QNetworkRequest> &request, std::unique_ptr<QNetworkReply> &reply,

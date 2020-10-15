@@ -22,6 +22,7 @@
 #ifndef QARROWHEADHTTPCLIENTDEVICEADAPTER_H
 #define QARROWHEADHTTPCLIENTDEVICEADAPTER_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 #include "onboardingwithnamerequest.h"
@@ -47,7 +48,7 @@
 
 namespace arrowhead {
 
-class QArrowheadHttpClientDeviceAdapter : public QArrowheadClientDeviceAdapter
+class QAHDEVADAPTER_EXPORT QArrowheadHttpClientDeviceAdapter : public QArrowheadClientDeviceAdapter
 {
 public:
 

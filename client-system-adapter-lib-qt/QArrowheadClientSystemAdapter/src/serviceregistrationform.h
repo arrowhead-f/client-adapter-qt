@@ -22,12 +22,13 @@
 #ifndef SERVICEREGISTRATIONFORM_H
 #define SERVICEREGISTRATIONFORM_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct ServiceRegistrationForm
+struct QAHSYSADAPTER_EXPORT ServiceRegistrationForm
 {
     ArrowheadService service;
     ArrowheadSystem provider;

@@ -22,11 +22,12 @@
 #ifndef DEVICEONBOARDINGRESPONSE_H
 #define DEVICEONBOARDINGRESPONSE_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "certificate.h"
 #include "deviceregistryentry.h"
 
 namespace arrowhead {
-    struct DeviceOnboardingResponse{
+    struct QAHDEVADAPTER_EXPORT DeviceOnboardingResponse{
         Certificate certificateResponse;
         DeviceRegistryEntry deviceRegistryEntry;
 

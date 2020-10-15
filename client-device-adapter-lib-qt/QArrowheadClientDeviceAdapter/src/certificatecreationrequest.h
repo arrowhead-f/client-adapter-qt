@@ -22,11 +22,12 @@
 #ifndef CERTIFICATECREATIONREQUEST_H
 #define CERTIFICATECREATIONREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "keypair.h"
 
 namespace arrowhead {
 
-struct CertificateCreationRequest
+struct QAHDEVADAPTER_EXPORT CertificateCreationRequest
 {
     std::string commonName;
     KeyPair keyPair;

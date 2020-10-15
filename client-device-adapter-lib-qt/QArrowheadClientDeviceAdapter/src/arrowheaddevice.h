@@ -22,10 +22,11 @@
 #ifndef ARROWHEADDEVICE_H
 #define ARROWHEADDEVICE_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include <QJsonObject>
 
 namespace arrowhead {
-struct ArrowheadDevice{
+struct QAHDEVADAPTER_EXPORT ArrowheadDevice{
     std::string deviceName;
     std::string macAddress;
     std::string address;

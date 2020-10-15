@@ -19,12 +19,14 @@
 **
 ****************************************************************************/
 
+#include "arrowheadserverexception.h"
 #include "httpclient.h"
 #include <QFile>
 #include <QSslKey>
 #include <QEventLoop>
 #include <QNetworkReply>
 #include <QAuthenticator>
+#include <QJsonDocument>
 
 namespace arrowhead {
 
@@ -205,10 +207,50 @@ ReturnValue HttpClient::setSslConfig(
     return setSslConfig(caCertFileName, disableHostnameVerification);
 }
 
-ReturnValue HttpClient::setOnboardingSslConfig(std::string certificate, std::string privateKey) {
+ReturnValue HttpClient::setLocalCert(std::string certificate, std::string privateKey, bool fromFile) {
+    if(fromFile){
+        QFile certFile (certificate.data());
+        if(certFile.open(QFile::ReadOnly)){
+            qDebug() << "HttpClient certFile=" << certFile.fileName() << " opened successfully.";
+            cert = QSslCertificate(&certFile);
+            certFile.close();
+            if(!cert.isNull()){
+                sslConfig.setLocalCertificate(cert);
+            }
+            else{
+                qCritical() << "HttpClient SSL Local cert is NULL.";
+                return ReturnValue::InvalidValue;
+            }
+        }
+        else{
+            qCritical() << "HttpClient: Failed to open Cert File.";
+            return ReturnValue::UnknownError;
+        }
+        QFile keyFile(privateKey.data());
+        if(keyFile.open(QFile::ReadOnly)){
+            qDebug() << "HttpClient keyFile=" << keyFile.fileName() << " opened successfully.";
+            key = QSslKey(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
+            keyFile.close();
+            if(!key.isNull()){
+                sslConfig.setPrivateKey(key);
+            }
+            else{
+                qCritical() << "HttpClient SSL private key is NULL.";
+                return ReturnValue::InvalidValue;
+            }
+        }
+        else{
+            qCritical() << "HttpClient: Failed to open Key File.";
+            return ReturnValue::UnknownError;
+        }
+    }
+    else{
+        sslConfig.setLocalCertificate(QSslCertificate(QByteArray(certificate.data())));
+        sslConfig.setPrivateKey(QSslKey(QByteArray(privateKey.data()), QSsl::Rsa));
+    }
 
-    sslConfig.setPrivateKey(QSslKey(QByteArray(privateKey.data()), QSsl::Rsa));
-    sslConfig.setLocalCertificate(QSslCertificate(QByteArray(certificate.data())));
+    qnam.clearAccessCache();
+
     return ReturnValue::Ok;
 }
 
@@ -251,6 +293,8 @@ ReturnValue HttpClient::performHttpOperation(QNetworkAccessManager::Operation op
         request->setSslConfiguration(sslConfig);
     }
 
+    qDebug() << "HttpClient performOperation request cert: " << request->sslConfiguration().localCertificate();
+
     QEventLoop eventLoop;
     QObject::connect(&qnam, &QNetworkAccessManager::finished, &eventLoop,
                      &QEventLoop::quit);
@@ -288,12 +332,20 @@ ReturnValue HttpClient::performHttpOperation(QNetworkAccessManager::Operation op
             retVal = ReturnValue::Ok;
         }
         else{
+            //Create error
+            auto responseBody = reply->readAll();
+
             qWarning() << "HttpClient::performHttpOperation ERROR " << reply->errorString();
             for(quint8 i=0; i<reply->rawHeaderList().length(); i++){
                 qDebug() << "HttpClient::performHttpOperation header: "
                          << reply->rawHeaderList().at(i);
             }
-            qWarning() << "HttpClient::performHttpOperation reply " << reply->readAll();
+            qWarning() << "HttpClient::performHttpOperation reply " << responseBody;
+
+
+           if(!responseBody.isEmpty())
+                throw ArrowheadServerException::fromJsonObject(QJsonDocument::fromJson(responseBody).object());
+
             retVal = ReturnValue::UnknownError;
         }
     }

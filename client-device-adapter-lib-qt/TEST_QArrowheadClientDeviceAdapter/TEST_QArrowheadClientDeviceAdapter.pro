@@ -34,3 +34,6 @@ CONFIG_DIR=$$_PRO_FILE_PWD_/etc/
 INITIALIZATION_FILE=$$_PRO_FILE_PWD_/etc/arrowhead.ini
 DEFINES += CONF_DIR=\"\\\"$${CONFIG_DIR}\\\"\"
 DEFINES += INI_FILE=\"\\\"$${INITIALIZATION_FILE}\\\"\"
+
+# Set RPATH for this executable in order to find shared libraries in custom target folder
+QMAKE_LFLAGS += -Wl,-rpath,"$$_PRO_FILE_PWD_/../../lib"

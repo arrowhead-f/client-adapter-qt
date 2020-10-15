@@ -22,6 +22,7 @@
 #ifndef DEVICERESITRATIONFORM_H
 #define DEVICERESITRATIONFORM_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 
@@ -30,7 +31,7 @@
 #include <QJsonObject>
 
 namespace arrowhead {
-    struct DeviceRegistrationForm{
+    struct QAHDEVADAPTER_EXPORT DeviceRegistrationForm{
         ArrowheadDevice device;
         std::string endOfValidity;
         stringmap metadata;

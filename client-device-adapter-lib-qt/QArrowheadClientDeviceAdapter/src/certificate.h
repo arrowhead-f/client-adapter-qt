@@ -22,13 +22,14 @@
 #ifndef CERTIFICATE_H
 #define CERTIFICATE_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "keypair.h"
 #include <string>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct Certificate
+struct QAHDEVADAPTER_EXPORT Certificate
 {
     enum class CertificateType{
         Ah_Onboarding,

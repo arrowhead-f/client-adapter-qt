@@ -22,11 +22,12 @@
 #ifndef DEVICEQUERYLIST_H
 #define DEVICEQUERYLIST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "deviceregistryentry.h"
 
 namespace  arrowhead {
 
-struct DeviceQueryList{
+struct QAHDEVADAPTER_EXPORT DeviceQueryList{
     std::vector<DeviceRegistryEntry> devices;
     int unfilteredHits;
     

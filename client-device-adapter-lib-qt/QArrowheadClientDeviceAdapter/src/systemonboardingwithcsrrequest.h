@@ -22,13 +22,13 @@
 #ifndef SYSTEMONBOARDINGWITHCSRREQUEST_H
 #define SYSTEMONBOARDINGWITHCSRREQUEST_H
 
-
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 
 namespace arrowhead {
 
-struct SystemOnboardingWithCsrRequest
+struct QAHDEVADAPTER_EXPORT SystemOnboardingWithCsrRequest
 {
     std::string certificateSigningRequest;
     ArrowheadDevice provider;

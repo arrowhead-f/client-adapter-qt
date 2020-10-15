@@ -4,9 +4,9 @@ QT       -= gui
 
 CONFIG += console
 CONFIG += console depend_includepath
-CONFIG += staticlib
 
 TEMPLATE = lib
+DEFINES += QARROWHEADCLIENTSYSTEMADAPTER_LIBRARY
 
 INCLUDEPATH += $$_PRO_FILE_PWD_/src \
                $$_PRO_FILE_PWD_/../../client-common-lib-qt/QArrowheadClientCommon/src \
@@ -41,9 +41,13 @@ HEADERS += \
     src/arrowheadservicerequirement.h \
     src/orchestrationresponse.h \
     src/orchestrationentry.h \
-    src/qarrowheadhttpclientsystemadapter.h
+    src/qarrowheadhttpclientsystemadapter.h \
+    src/qarrowheadclientsystemadapter_global.h
 
 target.path = $$_PRO_FILE_PWD_/../../lib
 INSTALLS += target
 
 DESTDIR = $$_PRO_FILE_PWD_/../../lib
+
+# Set RPATH for this executable in order to find shared libraries in custom target folder
+QMAKE_LFLAGS += -Wl,-rpath,"$$_PRO_FILE_PWD_/../../lib"

@@ -22,6 +22,7 @@
 #ifndef ONBOARDINGRESPONSE_H
 #define ONBOARDINGRESPONSE_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "certificate.h"
 #include <string>
@@ -29,7 +30,7 @@
 
 namespace arrowhead {
 
-struct OnboardingResponse
+struct QAHDEVADAPTER_EXPORT OnboardingResponse
 {
     std::string rootCertificate;
     std::string intermediateCertificate;

@@ -22,12 +22,13 @@
 #ifndef SYSTEMQUERYLIST_H
 #define SYSTEMQUERYLIST_H
 
-#include <vector>
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "systemregistryentry.h"
+#include <vector>
 
 namespace arrowhead {
 
-struct SystemQueryList
+struct QAHDEVADAPTER_EXPORT SystemQueryList
 {
     std::vector<SystemRegistryEntry> systems;
     int unfilteredHits;

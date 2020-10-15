@@ -22,6 +22,7 @@
 #ifndef DEVICEONBOARDINGWITHCSRREQUEST_H
 #define DEVICEONBOARDINGWITHCSRREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 
@@ -31,7 +32,7 @@
 
 
 namespace arrowhead{
-    struct DeviceOnboardingWithCsrRequest{
+    struct QAHDEVADAPTER_EXPORT DeviceOnboardingWithCsrRequest{
         std::string certificateSigningRequest;
         ArrowheadDevice device;
         std::string endOfValidity;

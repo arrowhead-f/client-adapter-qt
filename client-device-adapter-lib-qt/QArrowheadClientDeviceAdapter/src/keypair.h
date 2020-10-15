@@ -22,12 +22,13 @@
 #ifndef KEYPAIR_H
 #define KEYPAIR_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include <string>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct KeyPair
+struct QAHDEVADAPTER_EXPORT KeyPair
 {
     std::string keyAlgorithm;
     std::string keyFormat;

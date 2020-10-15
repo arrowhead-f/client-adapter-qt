@@ -22,13 +22,14 @@
 #ifndef SERVICEQUERYLIST_H
 #define SERVICEQUERYLIST_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "serviceregistryentry.h"
 #include <vector>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct ServiceQueryList
+struct QAHSYSADAPTER_EXPORT ServiceQueryList
 {
     std::vector<ServiceRegistryEntry> srEntryVector;
     int unfilteredHits;

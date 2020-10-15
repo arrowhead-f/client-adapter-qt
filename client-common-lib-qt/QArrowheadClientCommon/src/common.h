@@ -22,13 +22,14 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include "qarrowheadclientcommon_global.h"
 #include <string>
 #include <QObject>
 #include <QJsonObject>
 
 namespace arrowhead {
 
-enum class ReturnValue{
+enum class QARROWHEADCLIENTCOMMON_EXPORT ReturnValue{
     Ok = 0,
     InvalidValue = 1,
     InvalidArgNum = 2,
@@ -38,17 +39,17 @@ enum class ReturnValue{
     Unimplemented = 6
 };
 
-enum class SecurityType{
+enum class QARROWHEADCLIENTCOMMON_EXPORT SecurityType{
     Invalid,
     NotSecure,
     Certificate,
     Token
 };
 
-std::string typeToString(const SecurityType& type);
-SecurityType securityTypeFromString(const std::string& typeString);
+QARROWHEADCLIENTCOMMON_EXPORT std::string typeToString(const SecurityType& type);
+QARROWHEADCLIENTCOMMON_EXPORT SecurityType securityTypeFromString(const std::string& typeString);
 
-struct RegistryTag{
+struct QARROWHEADCLIENTCOMMON_EXPORT RegistryTag{
     int id {-1};
     std::string createdAt;
     std::string updatedAt;

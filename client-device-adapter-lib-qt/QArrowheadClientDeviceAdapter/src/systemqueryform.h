@@ -22,15 +22,15 @@
 #ifndef SYSTEMQUERYFORM_H
 #define SYSTEMQUERYFORM_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
+#include "arrowheadbasetypes.h"
 #include <string>
 #include <map>
 #include <QJsonObject>
 
-#include "arrowheadbasetypes.h"
-
 namespace arrowhead {
 
-struct SystemQueryForm
+struct QAHDEVADAPTER_EXPORT SystemQueryForm
 {
     std::string systemNameRequirements;
     std::string deviceNameRequirements;

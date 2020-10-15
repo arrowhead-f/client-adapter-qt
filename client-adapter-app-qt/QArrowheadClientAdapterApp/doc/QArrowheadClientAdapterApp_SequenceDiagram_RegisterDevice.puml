@@ -1,0 +1,15 @@
+@startuml
+
+Controller -> OnboardingController: Onboarding Request
+OnboardingController --> Controller: Onboarding Response
+
+Controller -> DeviceRegistry: Echo Request
+DeviceRegistry --> Controller: Echo Response
+
+Controller -> SystemRegistry: Echo Request
+SystemRegistry --> Controller: Echo Response
+
+Controller -> DeviceRegistry: Device registration Request
+DeviceRegistry --> Controller: Device registration Response
+
+@enduml

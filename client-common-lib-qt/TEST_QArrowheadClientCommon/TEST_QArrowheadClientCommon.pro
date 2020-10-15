@@ -25,3 +25,6 @@ SOURCES +=  \
     src/main.cpp \
     src/test_common.cpp \
     src/test_arrowheadbasetypes.cpp
+
+# Set RPATH for this executable in order to find shared libraries in custom target folder
+QMAKE_LFLAGS += -Wl,-rpath,"$$_PRO_FILE_PWD_/../../lib"

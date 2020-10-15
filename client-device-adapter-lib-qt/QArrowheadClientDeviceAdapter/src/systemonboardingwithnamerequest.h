@@ -22,13 +22,14 @@
 #ifndef SYSTEMONBOARDINGWITHNAMEREQUEST_H
 #define SYSTEMONBOARDINGWITHNAMEREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 #include "certificatecreationrequest.h"
 
 namespace arrowhead {
 
-struct SystemOnboardingWithNameRequest
+struct QAHDEVADAPTER_EXPORT SystemOnboardingWithNameRequest
 {
     CertificateCreationRequest ccr;
     ArrowheadDevice provider;

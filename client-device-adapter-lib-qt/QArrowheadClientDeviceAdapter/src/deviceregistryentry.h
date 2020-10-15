@@ -22,13 +22,14 @@
 #ifndef DEVICEREGISTRYENTRY_H
 #define DEVICEREGISTRYENTRY_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 
 #include <common.h>
 
 namespace arrowhead {
-    struct DeviceRegistryEntry{
+    struct QAHDEVADAPTER_EXPORT DeviceRegistryEntry{
         RegistryTag entryTag;
         ArrowheadDevice device;
         RegistryTag deviceTag;

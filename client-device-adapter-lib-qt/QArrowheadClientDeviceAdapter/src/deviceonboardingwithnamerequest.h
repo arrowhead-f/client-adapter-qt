@@ -22,13 +22,14 @@
 #ifndef DEVICEONBOARDINGWITHNAMEREQUEST_H
 #define DEVICEONBOARDINGWITHNAMEREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 #include "certificatecreationrequest.h"
 
 
 namespace arrowhead {
-    struct DeviceOnboardingWithNameRequest{
+    struct QAHDEVADAPTER_EXPORT DeviceOnboardingWithNameRequest{
         CertificateCreationRequest ccr;
         ArrowheadDevice device;
         std::string endOfValidity;

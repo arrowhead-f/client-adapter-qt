@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT += network
+QT -= gui
 
 equals(QMAKE_TARGET.arch, "arm"){
     TARGET = QArrowheadClientCommonArm
@@ -14,7 +15,7 @@ else{
 }
 
 TEMPLATE = lib
-CONFIG += staticlib
+DEFINES += QARROWHEADCLIENTCOMMON_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -29,11 +30,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         src/common.cpp \
-        src/arrowheadbasetypes.cpp
+        src/arrowheadbasetypes.cpp \
+        src/httpclient.cpp \
+        src/logger.cpp
 
 HEADERS += \
+        src/arrowheadserverexception.h \
         src/common.h \
-        src/arrowheadbasetypes.h
+        src/arrowheadbasetypes.h \
+        src/httpclient.h \
+        src/logger.h \
+    src/qarrowheadclientcommon_global.h
 
 target.path = $$_PRO_FILE_PWD_/../../lib
 INSTALLS += target

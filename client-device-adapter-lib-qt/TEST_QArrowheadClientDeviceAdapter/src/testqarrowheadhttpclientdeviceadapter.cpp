@@ -186,7 +186,7 @@ void TestQArrowheadHttpClientDeviceAdapter::registerDevice(){
     deviceRegistrationForm.device = testDevices[0];
     deviceRegistrationForm.version = 0;
 
-    ahAdapter->getHttpClient().setOnboardingSslConfig(onboardingCertificate, onboardingPrivateKey);
+    ahAdapter->getHttpClient().setLocalCert(onboardingCertificate, onboardingPrivateKey);
     QCOMPARE(ReturnValue::Ok, ahAdapter->registerDevice(deviceRegistrationForm, uptr_deviceRegistryEntry));
 
     if (uptr_deviceRegistryEntry != nullptr) {
@@ -257,7 +257,7 @@ void TestQArrowheadHttpClientDeviceAdapter::registerSystem(){
     systemRegistrationForm.provider = testDevices[0];
     systemRegistrationForm.version = 0;
 
-    ahAdapter->getHttpClient().setOnboardingSslConfig(deviceCertificate, onboardingPrivateKey);
+    ahAdapter->getHttpClient().setLocalCert(deviceCertificate, onboardingPrivateKey);
     QCOMPARE(ReturnValue::Ok, ahAdapter->registerSystem(systemRegistrationForm, uptr_systemRegistryEntry));
 
     if (uptr_systemRegistryEntry != nullptr) {
@@ -335,7 +335,7 @@ void TestQArrowheadHttpClientDeviceAdapter::unregisterSystem(){
 }
 
 void TestQArrowheadHttpClientDeviceAdapter::unregisterDevice(){
-    ahAdapter->getHttpClient().setOnboardingSslConfig(onboardingCertificate, onboardingPrivateKey);
+    ahAdapter->getHttpClient().setLocalCert(onboardingCertificate, onboardingPrivateKey);
     for (auto& deviceEntry : registeredDevices)
         QCOMPARE(ReturnValue::Ok, ahAdapter->unregisterDevice(deviceEntry));
 }

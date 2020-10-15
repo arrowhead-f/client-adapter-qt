@@ -22,6 +22,7 @@
 #ifndef ORCHESTRATIONENTRY_H
 #define ORCHESTRATIONENTRY_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "common.h"
 #include "arrowheadbasetypes.h"
 #include <vector>
@@ -29,7 +30,7 @@
 
 namespace arrowhead {
 
-struct OrchestrationEntry
+struct QAHSYSADAPTER_EXPORT OrchestrationEntry
 {
     enum class Warning{
         FromOtherCloud,
@@ -72,8 +73,8 @@ struct OrchestrationEntry
     static OrchestrationEntry fromJsonObject(const QJsonObject &jsonObj);
 };
 
-std::string typeToString(const OrchestrationEntry::Warning& type);
-OrchestrationEntry::Warning orchestrationWarningFromString(const std::string &typeString);
+QAHSYSADAPTER_EXPORT std::string typeToString(const OrchestrationEntry::Warning& type);
+QAHSYSADAPTER_EXPORT OrchestrationEntry::Warning orchestrationWarningFromString(const std::string &typeString);
 
 }
 

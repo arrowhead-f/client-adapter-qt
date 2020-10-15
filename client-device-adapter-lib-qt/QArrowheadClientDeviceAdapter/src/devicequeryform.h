@@ -22,6 +22,7 @@
 #ifndef DEVICEQUERYFORM_H
 #define DEVICEQUERYFORM_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 
 #include <string>
@@ -29,7 +30,7 @@
 #include <QJsonObject>
 
 namespace arrowhead {
-    struct DeviceQueryForm{
+    struct QAHDEVADAPTER_EXPORT DeviceQueryForm{
         std::string addressRequirement;
         std::string deviceNameRequirements;
         std::string macAddressRequirement;

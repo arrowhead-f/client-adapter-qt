@@ -8,7 +8,7 @@ QT       += network
 QT       -= gui
 
 TEMPLATE = lib
-CONFIG += staticlib
+DEFINES += QARROWHEADCLIENTDEVICEADAPTER_LIBRARY
 
 INCLUDEPATH += $$_PRO_FILE_PWD_/src \
                $$_PRO_FILE_PWD_/../../client-common-lib-qt/QArrowheadClientCommon/src \
@@ -45,7 +45,6 @@ SOURCES += \
     src/deviceregistryentry.cpp \
     src/onboardingwithcsrrequest.cpp \
     src/qarrowheadhttpclientdeviceadapter.cpp \
-    src/httpclient.cpp \
     src/onboardingwithnamerequest.cpp \
     src/keypair.cpp \
     src/certificatecreationrequest.cpp \
@@ -71,7 +70,6 @@ HEADERS += \
     src/onboardingwithcsrrequest.h \
     src/qarrowheadclientdeviceadapter.h \
     src/qarrowheadhttpclientdeviceadapter.h \
-    src/httpclient.h \
     src/onboardingwithnamerequest.h \
     src/keypair.h \
     src/certificatecreationrequest.h \
@@ -83,9 +81,13 @@ HEADERS += \
     src/systemqueryform.h \
     src/systemquerylist.h \
     src/systemregistrationform.h \
-    src/systemregistryentry.h
+    src/systemregistryentry.h \
+    src/qarrowheadclientdeviceadapter_global.h
 
 target.path = $$_PRO_FILE_PWD_/../../lib
 INSTALLS += target
 
 DESTDIR = $$_PRO_FILE_PWD_/../../lib
+
+# Set RPATH for this executable in order to find shared libraries in custom target folder
+QMAKE_LFLAGS += -Wl,-rpath,"$$_PRO_FILE_PWD_/../../lib"

@@ -1,0 +1,18 @@
+FROM alpine AS qtbuilder
+
+RUN apk update && apk upgrade \
+  && apk add --update alpine-sdk qt5-qtbase-dev \
+  && rm -rf /var/cache/apk/*
+
+WORKDIR /arrowhead
+
+COPY . .
+
+RUN qmake-qt5 -r && make
+
+FROM davidjenei/arrowhead-client-base
+
+COPY --from=0 arrowhead/client-adapter-app-qt/QArrowheadClientAdapterApp/QArrowheadClientAdapterApp .
+
+ENTRYPOINT ["/arrowhead/QArrowheadClientAdapterApp"]
+

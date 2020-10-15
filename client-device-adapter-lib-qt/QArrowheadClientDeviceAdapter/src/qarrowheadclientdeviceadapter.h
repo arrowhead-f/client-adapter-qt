@@ -22,6 +22,7 @@
 #ifndef QARROWHEADCLIENTDEVICEADAPTER_H
 #define QARROWHEADCLIENTDEVICEADAPTER_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "common.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
@@ -44,7 +45,7 @@
 
 namespace arrowhead {
 
-class QArrowheadClientDeviceAdapter{
+class QAHDEVADAPTER_EXPORT QArrowheadClientDeviceAdapter{
 public:
     QArrowheadClientDeviceAdapter(
             std::string onboardingControllerBaseUrl) :

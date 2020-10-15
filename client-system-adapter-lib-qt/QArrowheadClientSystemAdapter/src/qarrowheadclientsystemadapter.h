@@ -22,6 +22,7 @@
 #ifndef QARROWHEADCLIENTSYSTEMADAPTER_H
 #define QARROWHEADCLIENTSYSTEMADAPTER_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "common.h"
 #include "arrowheadbasetypes.h"
 #include "servicequeryform.h"
@@ -41,7 +42,7 @@ namespace arrowhead {
  * It provides functions to register and delete services in the Service Registry, and to request services
  * from the Orchestrator.
  */
-class QArrowheadClientSystemAdapter
+class QAHSYSADAPTER_EXPORT QArrowheadClientSystemAdapter
 {
 public:
     QArrowheadClientSystemAdapter(

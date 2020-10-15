@@ -22,12 +22,13 @@
 #ifndef SYSTEMREGISTRATIONFORM_H
 #define SYSTEMREGISTRATIONFORM_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "arrowheadbasetypes.h"
 #include "arrowheaddevice.h"
 
 namespace arrowhead {
 
-struct SystemRegistrationForm
+struct QAHDEVADAPTER_EXPORT SystemRegistrationForm
 {
     ArrowheadDevice provider;
     ArrowheadSystem system;

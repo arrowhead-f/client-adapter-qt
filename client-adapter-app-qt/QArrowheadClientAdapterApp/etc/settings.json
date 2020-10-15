@@ -1,0 +1,10 @@
+{
+    "authentication-method": "client certificate",
+    "key-store": "etc/eitg.p12",
+    "key-store-password": "password",
+    "onboarding-system-address": "127.0.0.1",
+    "onboarding-system-port": 8435,
+    "private-key": "etc/onboardingPrivateKey.pem",
+    "public-key": "etc/onboardingPublicKey.pem",
+    "shared-secret": "hidden_secret"
+}

@@ -21,6 +21,7 @@
 
 #include "onboardingresponse.h"
 
+
 namespace arrowhead {
 
 OnboardingResponse OnboardingResponse::fromJsonObject(const QJsonObject &orJson){

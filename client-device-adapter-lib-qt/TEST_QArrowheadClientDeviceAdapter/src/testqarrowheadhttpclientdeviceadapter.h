@@ -60,6 +60,7 @@ private slots:
 
 private:
     std::string iniFileName = INI_FILE;
+    
     std::string onboardingControllerBaseUrl;
     std::string deviceRegistryBaseUrl;
     std::string systemRegistryBaseUrl;

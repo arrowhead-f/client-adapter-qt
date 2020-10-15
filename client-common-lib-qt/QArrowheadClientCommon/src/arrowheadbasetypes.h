@@ -22,6 +22,7 @@
 #ifndef ARROWHEADBASETYPES_H
 #define ARROWHEADBASETYPES_H
 
+#include "qarrowheadclientcommon_global.h"
 #include "common.h"
 #include <string>
 #include <vector>
@@ -30,7 +31,7 @@
 
 namespace arrowhead {
 
-struct ArrowheadCloud{
+struct QARROWHEADCLIENTCOMMON_EXPORT ArrowheadCloud{
     std::string operatorName;
     std::string cloudName;
 
@@ -41,7 +42,7 @@ struct ArrowheadCloud{
     static ArrowheadCloud fromJsonObject(const QJsonObject& jsonObject);
 };
 
-struct ArrowheadSystem{
+struct QARROWHEADCLIENTCOMMON_EXPORT ArrowheadSystem{
     std::string systemName;
     std::string address;
     int port {8080};
@@ -60,7 +61,7 @@ struct ArrowheadSystem{
 using stringmap = std::map<std::string, std::string>;
 using stringvector = std::vector<std::string>;
 
-struct ArrowheadService{
+struct QARROWHEADCLIENTCOMMON_EXPORT ArrowheadService{
     std::string serviceDefinition;
     stringvector interfaces;
     SecurityType securityType;
@@ -88,7 +89,7 @@ private:
         serviceUri(serviceUri), endOfValidity(endOfValidity) {}
 };
 
-struct ArrowheadService::builder{
+struct QARROWHEADCLIENTCOMMON_EXPORT ArrowheadService::builder{
     std::string serviceDefinition;
     stringvector interfaces;
     SecurityType securityType = SecurityType::Invalid;

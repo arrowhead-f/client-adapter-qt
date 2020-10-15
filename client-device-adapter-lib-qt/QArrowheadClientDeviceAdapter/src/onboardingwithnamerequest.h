@@ -22,11 +22,12 @@
 #ifndef ONBOARDINGWITHNAMEREQUEST_H
 #define ONBOARDINGWITHNAMEREQUEST_H
 
+#include "qarrowheadclientdeviceadapter_global.h"
 #include "certificatecreationrequest.h"
 
 namespace arrowhead {
 
-struct OnboardingWithNameRequest
+struct QAHDEVADAPTER_EXPORT OnboardingWithNameRequest
 {
     CertificateCreationRequest ccr;
 

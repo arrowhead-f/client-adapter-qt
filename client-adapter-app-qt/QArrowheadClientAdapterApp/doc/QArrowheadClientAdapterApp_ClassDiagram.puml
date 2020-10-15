@@ -1,0 +1,233 @@
+@startuml
+class Controller {
+    -string context
+    
+    +void selectDevice(string name, string on)
+    +void selectSystem(string name, string on)
+
+    +string getContext()
+
+    +string getStatusMessage()
+
+    +void registerDevice(Record<DeviceParam> deviceToRegister, string on)
+    +void registerSystem(Record<SystemParam> systemToRegister, string on)
+    +void registerService(Record<ServiceParam> serviceToRegister, string on)
+    +void unregisterDevice(string name, string on)
+    +void unregisterSystem(string name, string on)
+    +void unregisterService(string name, string on)
+    +void orchestrateSystem(Record<OrchestrationRequestParam> orchestrationRequest, string on)
+    +void setSettings(Record<SettingsParam> settings_param)
+
+    +Record<SettingsParam> getSettings()
+    +Record<DeviceParam> getDevice(string name, string on)
+    +Record<SystemParam> getSystem(string name, string on)
+    +Record<ServiceParam> getService(string name, string on)
+    +Record<OrchestrationParam> getOrchestration(string name, string on)
+    +vector<Record<DeviceParam>> getDevices(string name, vector<DeviceParam>, string on)
+    +vector<Record<SystemParam>> getSystems(string name, vector<SystemParam>, string on)
+    +vector<Record<ServiceParam>> getServices(string name, vector<ServiceParam>, string on)
+    +vector<Record<OrchestrationParam>> getOrchestrations(string name, vector<OrchestrationParam>, string on)
+}
+
+class Record<T>{
+    -map<T, shared_ptr<ValueType>> values
+    -vector<T> parameters
+
+    +void addField(T parameter, string value)
+    +void addField(T parameter, int value)
+	  +void addField(T parameter, map<string, string> value)
+    +void addField(T parameter, vector<string> value)
+    +void addField(T parameter, shared_ptr<ValueType> value)
+    
+    +string getString(T parameter)
+    +int getInteger(T parameter)
+    +map<string, string> getMap(T parameter)
+    +vector<string> getList(T parameter)
+    
+    +string toString(T parameter)
+    
+    +vector<T> getParameters()
+    
+    +QByteArray toByteArray()
+    +void updateFromByteArray(QByteArray byteArray)
+}
+
+class DeviceParam {
+  static DeviceParam fromString()
+  string toString()
+}
+class SystemParam {
+  static DeviceParam fromString()
+  string toString()
+}
+class ServiceParam {
+  static DeviceParam fromString()
+  string toString()
+}
+class OrchestrationParam {
+  static DeviceParam fromString()
+  string toString()
+}
+class OrchestrationRequestParam {
+  static DeviceParam fromString()
+  string toString()
+}
+class SettingsParam {
+  static DeviceParam fromString()
+  string toString()
+}
+
+enum DeviceParam::type {
+    name
+    address
+    mac
+    metadata
+    authentication_info
+    onboarding_certificate
+    device_certificate
+}
+enum SystemParam::type {
+    name
+    address
+    port
+    metadata
+    authentication_info
+    system_certificate
+}
+enum ServiceParam::type {
+  name
+  uri
+  interfaces
+  security_type
+  metadata
+}
+enum OrchestrationParam::type {
+  name
+  service_definition
+  interfaces
+  security_type
+  version
+  min_version
+  max_version
+  preferred_providers
+  orchestration_flags
+}
+enum OrchestrationRequestParam::type {
+        name
+
+        provider_id
+        provider_system_name
+        provider_address
+        provider_port
+        provider_authentication_info
+        provider_created_at
+        provider_updated_at
+
+        service_id
+        service_name
+        service_created_at
+        service_updated_at
+        service_uri
+
+        secure
+        metadata
+        interfaces
+        version
+        authorization_tokens
+        warnings
+}
+enum SettingsParam::type {
+  onboarding_system_address
+  onboarding_system_port
+  authentication_method
+  shared_secret
+  key_store
+  key_store_password
+  private_key
+  public_key
+  certificate
+  system_operator_certificate
+}
+
+DeviceParam *-- DeviceParam::type
+SystemParam *-- SystemParam::type
+ServiceParam *-- ServiceParam::type
+OrchestrationParam *-- OrchestrationParam::type
+OrchestrationRequestParam *-- OrchestrationRequestParam::type
+SettingsParam *-- SettingsParam::type
+
+
+abstract class ValueType {
+  +abstract string toString()
+  +abstract QJsonValue toJsonValue()
+}
+
+class StringType {
+  -string value
+  +operator string()
+  
+  +string toString()
+  +QJsonValue toJsonValue()
+}
+class IntegerType {
+  -int value
+  +operator int()
+  
+  +string toString()
+  +QJsonValue toJsonValue()
+}
+class MapType {
+  -map<string, string> value
+  +operator map<string, string>()
+  
+  +string toString()
+  +QJsonValue toJsonValue()
+}
+class ListType {
+  -vector<string> value
+  +operator vector<string>()
+  
+  +string toString()
+  +QJsonValue toJsonValue()
+}
+
+ValueType <|-- StringType
+ValueType <|-- IntegerType
+ValueType <|-- MapType
+ValueType <|-- ListType
+
+
+class DataStore {
+  +bool isValid(string device, string system, string service)
+  
+  +Record<SettingsParam> getSettings()
+  +setSettings(Record<SettingsParam> settingsToSet)
+
+  +saveOnboardingCertificate(string certificate, string device)
+  +saveDeviceCertificate(string certificate, string device)
+  +saveSystemCertificate(string certificate, string device, string system)
+
+  +string getOnboardingCertificate(string device)
+  +string getDeviceCertificate(string device)
+  +string getSystemCertificate(string device, string system)
+
+  +string getPublicKey()
+  +string getPrivateKey()
+  
+  +saveDevice(string path, Record<DeviceParam> deviceToSave)
+  +saveSystem(string path, Record<SystemParam> systemToSave, string device)
+  +saveService(string path, Record<ServiceParam> serviceToSave, string device, string system)
+  +saveOrchestration(string path, Record<OrchestrationParam> orchestartionToSave, string device, string system)
+  
+  +removeDevice(string name)
+  +removeSystem(string name, string device)
+  +removeService(string name, string device, string system)
+}
+
+class ConsoleApp {
+  +start()
+}
+
+ConsoleApp-->Controller
+Controller-->DataStore
+@enduml

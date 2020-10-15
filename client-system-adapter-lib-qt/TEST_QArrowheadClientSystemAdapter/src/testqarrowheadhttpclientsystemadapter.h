@@ -35,7 +35,7 @@ public:
 private slots:
     void initTestCase();
     void getServiceRegistryEcho();
-    void queryService();
+    //void queryService();  // TODO: compare ArrowheadServerException
     void registerService();
     void unregisterService();
     void getAuthorizationEcho();

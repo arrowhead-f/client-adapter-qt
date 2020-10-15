@@ -22,13 +22,14 @@
 #ifndef SERVICEREGISTRYENTRY_H
 #define SERVICEREGISTRYENTRY_H
 
+#include "qarrowheadclientsystemadapter_global.h"
 #include "common.h"
 #include "arrowheadbasetypes.h"
 #include <QJsonObject>
 
 namespace arrowhead {
 
-struct ServiceRegistryEntry
+struct QAHSYSADAPTER_EXPORT ServiceRegistryEntry
 {
     struct ServiceEntry{
         ArrowheadService service;
