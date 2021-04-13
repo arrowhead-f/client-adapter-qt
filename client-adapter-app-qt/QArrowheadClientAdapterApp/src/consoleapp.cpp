@@ -525,7 +525,7 @@ ConsoleApp::ConsoleApp(int argc, char* argv[], QObject *parent)
 
                                     /* Action: */
                                     [this](std::map<std::string, Parameter> parameters)->CommandEffect{
-                                        showRecord(controller.getService(std::get<Text>(parameters["name"]), getContext(parameters)));
+                                        showRecord(controller.getOrchestration(std::get<Text>(parameters["name"]), getContext(parameters)));
                                         return CommandEffect::Continue;
                                     }
                                 )
